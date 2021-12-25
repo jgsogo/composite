@@ -11,6 +11,8 @@
 
 template<typename Part, typename Group>
 struct Trait {
+    using PartTypename = Part;
+    using GroupTypename = Group;
 
     class Visitor {
     public:
@@ -40,6 +42,12 @@ struct Trait {
         };
     };
 
+    class TraitGroup;
+
+    static void addedItem(TraitGroup& group, std::shared_ptr<TraitBase> item) {
+
+    }
+
     class TraitGroup : public TraitBase, public Group {
     public:
         template<typename ...Args>
@@ -47,6 +55,7 @@ struct Trait {
 
         virtual void addPart(std::shared_ptr<TraitBase> item) {
             _children.push_back(item);
+            addedItem(*this, item);
         }
 
         void accept(Visitor &v) override {
@@ -61,4 +70,5 @@ struct Trait {
     protected:
         std::vector<std::shared_ptr<TraitBase>> _children;
     };
+
 };
