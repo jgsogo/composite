@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <iostream>
 #include "trait.hpp"
 
 
@@ -35,7 +36,25 @@ struct DepthTrait : public Trait<ItemDepth, ItemDepth> {
 
 using DepthTrait = Trait<ItemDepth, ItemDepth>;
 
+/*
+template <typename TGroup, typename TBase>
+void addedItem3<TGroup, TBase, std::enable_if_t<std::is_base_of_v<ItemDepth, TGroup>>>(TGroup& group, std::shared_ptr<TBase> item) {
+    std::cout << "*******" << std::endl;
+    //InsertionVisitor insertionVisitor{group.depth + 1};
+    //item->accept(insertionVisitor);
+}
+ */
+
+/*
+template <typename TGroup, typename TBase>
+inline typename std::enable_if<std::is_base_of<TGroup, ItemDepth>::value, void>::type
+addedItem(TGroup& group, std::shared_ptr<TBase> item) {
+    std::cout << ">>> messing with ItemDepth! " << std::endl;
+}
+*/
+
 template <>
-void DepthTrait::addedItem(DepthTrait::TraitGroup& group, std::shared_ptr<DepthTrait::TraitBase> item);
+inline void addedItem<ItemDepth, ItemDepth>(Trait<ItemDepth, ItemDepth>::GroupTypename& group, std::shared_ptr<Trait<ItemDepth, ItemDepth>::TraitBase> item);
+
 
 

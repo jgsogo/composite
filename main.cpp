@@ -123,5 +123,6 @@ int main() {
     IDDepthVisitor v;
 
     g1->accept(v);
+
     return 0;
 }

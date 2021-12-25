@@ -33,8 +33,8 @@ struct TraitCompose {
 
         virtual void addPart(std::shared_ptr<typename TraitType::TraitBase> item) {
             TraitType::TraitGroup::addPart(item);
-            Trait1::addedItem(*this, item);
-            Trait2::addedItem(*this, item);
+            addedItem<typename Trait1::GroupTypename, typename Trait1::PartTypename>(*this, item);
+            addedItem<typename Trait2::GroupTypename, typename Trait2::PartTypename>(*this, item);
         }
     };
 
@@ -64,6 +64,14 @@ struct TraitCompose {
     };
      */
 };
+
+/*
+template<typename Trait1, typename Trait2>
+inline void addedItem(typename TraitCompose<Trait1, Trait2>::Trait::TraitGroup& group,
+                      std::shared_ptr<typename TraitCompose<Trait1, Trait2>::Trait::TraitBase> item) {
+    std::cout << ">>> messing with TraitCompose! " << std::endl;
+}
+ */
 
 /*
 template<typename Trait1, typename Trait2>

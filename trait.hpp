@@ -9,6 +9,22 @@
  * base class, a visitor, groups and parts.
  * */
 
+
+template <typename TGroup, typename TBase>
+void addedItem2(TGroup& group, std::shared_ptr<TBase> item) {
+
+}
+
+template<typename Part, typename Group>
+struct Trait;
+
+
+template<typename Group, typename Part>
+void addedItem(typename Trait<Part, Group>::GroupTypename& group, std::shared_ptr<typename Trait<Part, Group>::TraitBase> item) {
+
+}
+
+
 template<typename Part, typename Group>
 struct Trait {
     using PartTypename = Part;
@@ -42,12 +58,6 @@ struct Trait {
         };
     };
 
-    class TraitGroup;
-
-    static void addedItem(TraitGroup& group, std::shared_ptr<TraitBase> item) {
-
-    }
-
     class TraitGroup : public TraitBase, public Group {
     public:
         template<typename ...Args>
@@ -55,7 +65,7 @@ struct Trait {
 
         virtual void addPart(std::shared_ptr<TraitBase> item) {
             _children.push_back(item);
-            addedItem(*this, item);
+            addedItem<Group, Part>(*this, item);
         }
 
         void accept(Visitor &v) override {

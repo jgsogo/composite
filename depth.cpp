@@ -24,11 +24,13 @@ namespace {
 }
 
 
+/*
 template<>
-void DepthTrait::addedItem(DepthTrait::TraitGroup &group, std::shared_ptr<DepthTrait::TraitBase> item) {
+void addedItem<DepthTrait::TraitGroup, DepthTrait::TraitBase>(DepthTrait::TraitGroup &group, std::shared_ptr<DepthTrait::TraitBase> item) {
     InsertionVisitor insertionVisitor{group.depth + 1};
     item->accept(insertionVisitor);
 }
+ */
 
 /*
 void DepthTrait::TraitGroup::addPart(std::shared_ptr<TraitBase> item) {
@@ -38,3 +40,9 @@ void DepthTrait::TraitGroup::addPart(std::shared_ptr<TraitBase> item) {
     Trait<ItemDepth, ItemDepth>::TraitGroup::addPart(item);
 }
 */
+
+template<>
+inline void addedItem<ItemDepth, ItemDepth>(Trait<ItemDepth, ItemDepth>::GroupTypename& group, std::shared_ptr<Trait<ItemDepth, ItemDepth>::TraitBase> item) {
+    InsertionVisitor insertionVisitor{group.depth + 1};
+    item->accept(insertionVisitor);
+}
