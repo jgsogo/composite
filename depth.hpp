@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string>
-#include <iostream>
 #include "trait.hpp"
 
 
@@ -53,8 +52,43 @@ addedItem(TGroup& group, std::shared_ptr<TBase> item) {
 }
 */
 
-template <>
-inline void addedItem<ItemDepth, ItemDepth>(Trait<ItemDepth, ItemDepth>::GroupTypename& group, std::shared_ptr<Trait<ItemDepth, ItemDepth>::TraitBase> item);
+/*
+template<>
+inline void Trait<ItemDepth, ItemDepth>::InsertionVisitor::visit(Trait<ItemDepth, ItemDepth>::PartTypename &part) {
+    std::cout << "InsertionVisitor::visit" << std::endl;
+}
+ */
+
+template<>
+void Trait<ItemDepth, ItemDepth>::addedPartToGroup(ItemDepth& group, ItemDepth& part);
+
+template<>
+bool Trait<ItemDepth, ItemDepth>::addedGroupToGroup(ItemDepth& group, ItemDepth& part);
+
+/*
+template<>
+class Trait<ItemDepth, ItemDepth>::InsertionVisitor : public Trait<ItemDepth, ItemDepth>::Visitor {
+public:
+    explicit InsertionVisitor(TraitGroup &group) : _group(group) {}
+
+    void visit(Trait<ItemDepth, ItemDepth>::PartTypename &part) override {
+        std::cout << "InsertionVisitor::visit" << std::endl;
+    }
+
+    bool enter(Trait<ItemDepth, ItemDepth>::GroupTypename &group) override {
+        std::cout << "InsertionVisitor::enter" << std::endl;
+        return false;
+    }
+
+    void exit(Trait<ItemDepth, ItemDepth>::GroupTypename &) override {}
+
+protected:
+    TraitGroup &_group;
+};
+*/
+
+//template <>
+//inline void addedItem<ItemDepth, ItemDepth>(Trait<ItemDepth, ItemDepth>::GroupTypename& group, std::shared_ptr<Trait<ItemDepth, ItemDepth>::TraitBase> item);
 
 
 

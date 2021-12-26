@@ -10,25 +10,17 @@
  * */
 
 
-template <typename TGroup, typename TBase>
-void addedItem2(TGroup& group, std::shared_ptr<TBase> item) {
-
-}
-
-template<typename Part, typename Group>
-struct Trait;
-
-
-template<typename Group, typename Part>
-void addedItem(typename Trait<Part, Group>::GroupTypename& group, std::shared_ptr<typename Trait<Part, Group>::TraitBase> item) {
-
-}
-
 
 template<typename Part, typename Group>
 struct Trait {
     using PartTypename = Part;
     using GroupTypename = Group;
+
+    static void addedPartToGroup(Group &group, Part &part) {}
+
+    static bool addedGroupToGroup(Group &group, Group &part) {
+        return false;
+    }
 
     class Visitor {
     public:
@@ -58,14 +50,17 @@ struct Trait {
         };
     };
 
+    class InsertionVisitor;
+
     class TraitGroup : public TraitBase, public Group {
     public:
         template<typename ...Args>
         explicit TraitGroup(Args... args) : Group(args...) {};
 
         virtual void addPart(std::shared_ptr<TraitBase> item) {
-            _children.push_back(item);
-            addedItem<Group, Part>(*this, item);
+            _addPart(item);
+            InsertionVisitor v{*this};
+            item->accept(v);
         }
 
         void accept(Visitor &v) override {
@@ -78,7 +73,29 @@ struct Trait {
         }
 
     protected:
+        void _addPart(std::shared_ptr<TraitBase> item) {
+            _children.push_back(item);
+        }
+    protected:
         std::vector<std::shared_ptr<TraitBase>> _children;
     };
 
+    class InsertionVisitor : public Visitor {
+    public:
+        explicit InsertionVisitor(Group &group) : _group(group) {}
+
+        void visit(Part &part) override {
+            addedPartToGroup(_group, part);
+        }
+
+        bool enter(Group &group) override {
+            return addedGroupToGroup(_group, group);
+            //return false;
+        }
+
+        void exit(Group &) override {}
+
+    protected:
+        Group &_group;
+    };
 };

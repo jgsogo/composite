@@ -23,6 +23,16 @@ namespace {
 
 }
 
+template<>
+void Trait<ItemDepth, ItemDepth>::addedPartToGroup(ItemDepth& group, ItemDepth& part) {
+    part.depth = group.depth + 1;
+}
+
+template<>
+bool Trait<ItemDepth, ItemDepth>::addedGroupToGroup(ItemDepth& group, ItemDepth& part) {
+    part.depth = group.depth + 1;
+    return true;
+}
 
 /*
 template<>
@@ -41,8 +51,3 @@ void DepthTrait::TraitGroup::addPart(std::shared_ptr<TraitBase> item) {
 }
 */
 
-template<>
-inline void addedItem<ItemDepth, ItemDepth>(Trait<ItemDepth, ItemDepth>::GroupTypename& group, std::shared_ptr<Trait<ItemDepth, ItemDepth>::TraitBase> item) {
-    InsertionVisitor insertionVisitor{group.depth + 1};
-    item->accept(insertionVisitor);
-}
