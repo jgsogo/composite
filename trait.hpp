@@ -34,15 +34,26 @@ struct Trait {
         return addedGroupToGroup(static_cast<Group&>(group), static_cast<Group&>(part));
     }
 
+    template<typename ...Args>
+    static void addedPart(TraitGroup &group, Args&&... args) {
+
+    }
+
     class VisitorTrait {
     public:
         VisitorTrait() = default;
 
         virtual void visit(TraitPart &) = 0; //
 
-        virtual bool enter(TraitGroup &) = 0; //{ return true; }
+        virtual void visit(TraitGroup &) = 0; //
 
-        virtual void exit(TraitGroup &) = 0; // {}
+        virtual void _onGroup(TraitGroup& group) {
+            // TODO: This is implementing DFS (pre-order) algorithm
+            for (auto &it: group._children) {
+                it->accept(*this);
+            }
+            this->visit(group);
+        }
     };
 
     class Visitor : public VisitorTrait {
@@ -51,6 +62,7 @@ struct Trait {
 
         virtual void visit(Part &) = 0; //
 
+        virtual void visit(Group &) = 0; //
         virtual bool enter(Group &) = 0; //{ return true; }
 
         virtual void exit(Group &) = 0; // {}
@@ -81,6 +93,8 @@ struct Trait {
     };
 
     class InsertionVisitor;
+    template<typename ...Args>
+    class TPack;
 
     class TraitGroup : public TraitBase, public Group {
     public:
@@ -91,6 +105,9 @@ struct Trait {
             _addPart(item);
             InsertionVisitor v{*this};
             item->accept(v);
+
+            auto vPack = TPack<TraitGroup>{*this};
+            item->accept(vPack);
         }
 
         void accept(VisitorTrait &v) override {
@@ -128,4 +145,40 @@ struct Trait {
     protected:
         TraitGroup &_group;
     };
+
+    template<typename ...Args>
+    class TPack : public VisitorTrait {
+    public:
+        template<typename ...Args2>
+        explicit TPack(Args2&... args) : _chain(args...) {
+            static_assert(sizeof...(args) <= 10, "You can't have more than 10 arguments!");
+        }
+
+        template<typename ...Args2, std::enable_if_t<(sizeof...(Args2) <= 10)>* = nullptr>
+        static TPack<Args2...> make_from_tuple(std::tuple<Args2...> args) {
+            return std::make_from_tuple<TPack<Args2...>>(args);
+        }
+
+        template<typename ...Args2, std::enable_if_t<(sizeof...(Args2) > 10)>* = nullptr>
+        static TPack<Args2...> make_from_tuple(std::tuple<Args2...> args) {
+            throw std::runtime_error("You can't have more that 10 nested groups");
+        }
+
+        void visit(TraitPart &part) override {
+            //std::apply(&addedPart, std::tuple_cat(_chain, std::tie(part)));
+        }
+
+        bool enter(TraitGroup &group) override {
+            auto tt = std::tuple_cat(_chain, std::tie(group));
+            auto recurse = make_from_tuple(tt);
+            group.accept(recurse);
+            return false;
+        }
+
+        void exit(TraitGroup &) override {}
+
+    protected:
+        std::tuple<Args&...> _chain;
+    };
+
 };
