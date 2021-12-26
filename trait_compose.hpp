@@ -26,12 +26,16 @@ struct TraitCompose {
 
     using TraitType = Trait<PartTypename, GroupTypename>;
 
-    static void addedPartToGroup(GroupTypename &group, PartTypename &part) {
+    static void addedPartToGroup(typename TraitType::TraitGroup &group, typename TraitType::TraitPart &part) {
+        // TODO: Trait1::addedPartToGroup(static_cast<typename Trait1::TraitGroup&>(group), static_cast<typename Trait1::TraitPart&>(part));
+        // TODO: Trait2::addedPartToGroup(static_cast<typename Trait2::TraitGroup&>(group), static_cast<typename Trait2::TraitPart&>(part));
         Trait1::addedPartToGroup(static_cast<typename Trait1::GroupTypename&>(group), static_cast<typename Trait1::PartTypename&>(part));
         Trait2::addedPartToGroup(static_cast<typename Trait2::GroupTypename&>(group), static_cast<typename Trait2::PartTypename&>(part));
     }
 
-    static bool addedGroupToGroup(GroupTypename &group, GroupTypename &part) {
+    static bool addedGroupToGroup(typename TraitType::TraitGroup &group, typename TraitType::TraitGroup &part) {
+        // TODO: auto t1 = Trait1::addedGroupToGroup(static_cast<typename Trait1::TraitGroup&>(group), static_cast<typename Trait1::TraitGroup&>(part));
+        // TODO: auto t2 = Trait2::addedGroupToGroup(static_cast<typename Trait2::TraitGroup&>(group), static_cast<typename Trait2::TraitGroup&>(part));
         auto t1 = Trait1::addedGroupToGroup(static_cast<typename Trait1::GroupTypename&>(group), static_cast<typename Trait1::GroupTypename&>(part));
         auto t2 = Trait2::addedGroupToGroup(static_cast<typename Trait2::GroupTypename&>(group), static_cast<typename Trait2::GroupTypename&>(part));
         return t1 && t2; // TODO: what logical operator to use here? bitwise mask?
@@ -54,13 +58,13 @@ struct TraitCompose {
 
     class ComposeInsertionVisitor : public TraitType::InsertionVisitor {
     public:
-        explicit ComposeInsertionVisitor(GroupTypename &group) : TraitType::InsertionVisitor(group) {}
+        explicit ComposeInsertionVisitor(TraitGroup &group) : TraitType::InsertionVisitor(group) {}
 
-        void visit(PartTypename &part) override {
+        void visit(typename TraitType::TraitPart &part) override {
             addedPartToGroup(TraitType::InsertionVisitor::_group, part);
         }
 
-        bool enter(GroupTypename &group) override {
+        bool enter(typename TraitType::TraitGroup &group) override {
             return addedGroupToGroup(TraitType::InsertionVisitor::_group, group);
         }
     };
@@ -74,67 +78,4 @@ struct TraitCompose {
         using TraitGroup = TraitGroup;
         using InsertionVisitor = typename TraitType::InsertionVisitor;
     };
-
-    //using Trait = Trait<PartTypename, GroupTypename>;
-
-    /*
-    class Visitor : public Trait1::Visitor, public Trait2::Visitor {
-    };
-
-    class TraitPart : public Trait1::TraitPart, public Trait2::TraitPart {
-    public:
-        template<typename ...Args1, typename ...Args2>
-        explicit TraitPart(Args1... args1, Args2... args2) : Trait1::TraitPart(args2...), Trait2::TraitPart(args2...) {};
-    };
-
-    class TraitGroup : public Trait1::TraitGroup, public Trait2::TraitGroup {
-    };
-     */
 };
-
-/*
-template<typename Trait1, typename Trait2>
-inline void Trait<typename TraitCompose<Trait1, Trait2>::GroupTypename, typename TraitCompose<Trait1, Trait2>::PartTypename>::InsertionVisitor::visit(
-        typename TraitCompose<Trait1, Trait2>::PartTypename &part) {
-    std::cout << "TraitCompose::InsertionVisitor::visit" << std::endl;
-}
-*/
-
-/*
-template<typename Trait1, typename Trait2>
-class typename Trait<typename TraitCompose<Trait1, Trait2>::GroupTypename, typename TraitCompose<Trait1, Trait2>::PartTypename>::InsertionVisitor
-        : public TraitCompose<Trait1, Trait2>::Visitor {
-public:
-    explicit InsertionVisitor(TraitGroup &group) : _group(group) {}
-
-    void visit(Trait<ItemDepth, ItemDepth>::PartTypename &part) override {
-        std::cout << "InsertionVisitor::visit" << std::endl;
-    }
-
-    bool enter(Trait<ItemDepth, ItemDepth>::GroupTypename &group) override {
-        std::cout << "InsertionVisitor::enter" << std::endl;
-        return false;
-    }
-
-    void exit(Trait<ItemDepth, ItemDepth>::GroupTypename &) override {}
-
-protected:
-    TraitGroup &_group;
-};
-*/
-
-/*
-template<typename Trait1, typename Trait2>
-inline void addedItem(typename TraitCompose<Trait1, Trait2>::Trait::TraitGroup& group,
-                      std::shared_ptr<typename TraitCompose<Trait1, Trait2>::Trait::TraitBase> item) {
-    std::cout << ">>> messing with TraitCompose! " << std::endl;
-}
- */
-
-/*
-template<typename Trait1, typename Trait2>
-void TraitCompose<Trait1, Trait2>::Trait::addedItem(typename TraitCompose<Trait1, Trait2>::Trait::TraitGroup& group,
-                                                    std::shared_ptr<typename TraitCompose<Trait1, Trait2>::Trait::TraitBase> item) {
-    std::cout << "----";
-}
- */

@@ -62,6 +62,7 @@ void identificable() {
         int tabs = 0;
     };
     IdVisitor idVisitor;
+
     // Create a part
     auto p1 = std::make_shared<IdenticableTrait::TraitPart>("part1");
     auto p2 = std::make_shared<IdenticableTrait::TraitPart>("part2");
@@ -97,8 +98,8 @@ int main() {
 
     g1->addPart(p1);
     g1->addPart(p2);
-    g1->addPart(g2);
     g2->addPart(p3);
+    g1->addPart(g2);
 
     class IDDepthVisitor : public IDDepth::Visitor {
     public:

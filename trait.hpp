@@ -16,13 +16,36 @@ struct Trait {
     using PartTypename = Part;
     using GroupTypename = Group;
 
-    static void addedPartToGroup(Group &group, Part &part) {}
+    class TraitPart;
+
+    class TraitGroup;
+
+    static void addedPartToGroup(Group &group, Part &part) {
+
+    }
+    static void addedPartToGroup(TraitGroup &group, TraitPart &part) {
+        addedPartToGroup(static_cast<Group&>(group), static_cast<Part&>(part));
+    }
 
     static bool addedGroupToGroup(Group &group, Group &part) {
         return false;
     }
+    static bool addedGroupToGroup(TraitGroup &group, TraitGroup &part) {
+        return addedGroupToGroup(static_cast<Group&>(group), static_cast<Group&>(part));
+    }
 
-    class Visitor {
+    class VisitorTrait {
+    public:
+        VisitorTrait() = default;
+
+        virtual void visit(TraitPart &) = 0; //
+
+        virtual bool enter(TraitGroup &) = 0; //{ return true; }
+
+        virtual void exit(TraitGroup &) = 0; // {}
+    };
+
+    class Visitor : public VisitorTrait {
     public:
         Visitor() = default;
 
@@ -31,13 +54,20 @@ struct Trait {
         virtual bool enter(Group &) = 0; //{ return true; }
 
         virtual void exit(Group &) = 0; // {}
+
+    protected:
+        void visit(TraitPart &p) final { this->visit(static_cast<Part &>(p)); }; //
+
+        bool enter(TraitGroup &g) final { return this->enter(static_cast<Group &>(g)); }; //
+
+        void exit(TraitGroup &g) final { this->exit(static_cast<Group &>(g)); }; //
     };
 
     class TraitBase {
     public:
         TraitBase() = default;
 
-        virtual void accept(Visitor &v) = 0;
+        virtual void accept(VisitorTrait &v) = 0;
     };
 
     class TraitPart : public TraitBase, public Part {
@@ -45,7 +75,7 @@ struct Trait {
         template<typename ...Args>
         explicit TraitPart(Args... args) : Part(args...) {};
 
-        void accept(Visitor &v) override {
+        void accept(VisitorTrait &v) override {
             v.visit(*this);
         };
     };
@@ -63,7 +93,7 @@ struct Trait {
             item->accept(v);
         }
 
-        void accept(Visitor &v) override {
+        void accept(VisitorTrait &v) override {
             if (v.enter(*this)) {
                 for (auto &it: _children) {
                     it->accept(v);
@@ -76,26 +106,26 @@ struct Trait {
         void _addPart(std::shared_ptr<TraitBase> item) {
             _children.push_back(item);
         }
+
     protected:
         std::vector<std::shared_ptr<TraitBase>> _children;
     };
 
-    class InsertionVisitor : public Visitor {
+    class InsertionVisitor : public VisitorTrait {
     public:
-        explicit InsertionVisitor(Group &group) : _group(group) {}
+        explicit InsertionVisitor(TraitGroup &group) : _group(group) {}
 
-        void visit(Part &part) override {
+        void visit(TraitPart &part) override {
             addedPartToGroup(_group, part);
         }
 
-        bool enter(Group &group) override {
+        bool enter(TraitGroup &group) override {
             return addedGroupToGroup(_group, group);
-            //return false;
         }
 
-        void exit(Group &) override {}
+        void exit(TraitGroup &) override {}
 
     protected:
-        Group &_group;
+        TraitGroup &_group;
     };
 };

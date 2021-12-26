@@ -1,9 +1,10 @@
 #include "depth.hpp"
 
 namespace {
-    class InsertionVisitor : public DepthTrait::Visitor {
+
+    class InsertionDepthVisitor : public DepthTrait::Visitor {
     public:
-        explicit InsertionVisitor(int baseDepth) : baseDepth(baseDepth) {};
+        explicit InsertionDepthVisitor(int baseDepth) : baseDepth(baseDepth) {};
 
         void visit(ItemDepth &item) override {
             item.depth += baseDepth;
@@ -29,25 +30,9 @@ void Trait<ItemDepth, ItemDepth>::addedPartToGroup(ItemDepth& group, ItemDepth& 
 }
 
 template<>
-bool Trait<ItemDepth, ItemDepth>::addedGroupToGroup(ItemDepth& group, ItemDepth& part) {
-    part.depth = group.depth + 1;
-    return true;
+bool DepthTrait::addedGroupToGroup(DepthTrait::TraitGroup& group, DepthTrait::TraitGroup& part) {
+    int groupDepth = group.depth + 1;
+    InsertionDepthVisitor insertionVisitor{groupDepth};
+    part.accept(insertionVisitor);
+    return false;
 }
-
-/*
-template<>
-void addedItem<DepthTrait::TraitGroup, DepthTrait::TraitBase>(DepthTrait::TraitGroup &group, std::shared_ptr<DepthTrait::TraitBase> item) {
-    InsertionVisitor insertionVisitor{group.depth + 1};
-    item->accept(insertionVisitor);
-}
- */
-
-/*
-void DepthTrait::TraitGroup::addPart(std::shared_ptr<TraitBase> item) {
-    InsertionVisitor insertionVisitor{this->depth + 1};
-    item->accept(insertionVisitor);
-
-    Trait<ItemDepth, ItemDepth>::TraitGroup::addPart(item);
-}
-*/
-
