@@ -2,6 +2,7 @@
 
 #include "identificable.hpp"
 #include "depth.hpp"
+#include "autonum.hpp"
 #include "trait_compose.hpp"
 
 void depth() {
@@ -20,6 +21,7 @@ void depth() {
             std::cout << "DepthVisitor::enterGroup " << item.depth << std::endl;
             return true;
         }
+
         void exitGroup(ItemDepth &item) override {
             std::cout << "DepthVisitor::exitGroup " << item.depth << std::endl;
         }
@@ -59,6 +61,7 @@ void identificable() {
             tabs++;
             return true;
         }
+
         void exitGroup(PartId &item) override {
             tabs--;
         }
@@ -83,14 +86,7 @@ void identificable() {
     g1->accept(idVisitor);
 }
 
-int main() {
-    std::cout << std::endl << std::endl << "IDENTIFICABLE" << std::endl;
-    identificable();
-
-    std::cout << std::endl << std::endl << "DEPTH" << std::endl;
-    depth();
-
-    std::cout << std::endl << std::endl << "IDDEPTH" << std::endl;
+void idDepth() {
     // Composition
     using IDDepth = TraitCompose<IdenticableTrait, DepthTrait>::Trait;
 
@@ -111,6 +107,7 @@ int main() {
         void visit(IDDepth::PartTypename &item) override {
             std::cout << std::string(tabs, ' ') << "part: " << item.id << " (" << item.depth << ")" << std::endl;
         }
+
         bool enterGroup(IDDepth::GroupTypename &item) override {
             std::cout << std::string(tabs, ' ') << item.id << ":" << std::endl;
             tabs++;
@@ -132,6 +129,68 @@ int main() {
     IDDepthVisitor v;
 
     g1->accept(v);
+}
+
+
+void traits3() {
+    // Composition
+    using IDDepth = TraitCompose<IdenticableTrait, DepthTrait>::Trait;
+    using IDDepthAutoNum = TraitCompose<IDDepth, AutoNumTrait>::Trait;
+
+    auto p1 = std::make_shared<IDDepthAutoNum::TraitPart>("part1");
+    auto p2 = std::make_shared<IDDepthAutoNum::TraitPart>("part2");
+    auto p3 = std::make_shared<IDDepthAutoNum::TraitPart>("part3");
+
+    auto g1 = std::make_shared<IDDepthAutoNum::TraitGroup>("group1");
+    auto g2 = std::make_shared<IDDepthAutoNum::TraitGroup>("group2");
+
+
+    g1->addPart(p1);
+    g1->addPart(p2);
+    g2->addPart(p3);
+    g1->addPart(g2);
+
+    class IDDepthAutoNumVisitor : public IDDepthAutoNum::Visitor {
+    public:
+        void visit(IDDepthAutoNum::PartTypename &item) override {
+            std::cout << std::string(tabs, ' ') << "part: " << item.id << " (" << item.depth << ")" << std::endl;
+        }
+
+        bool enterGroup(IDDepthAutoNum::GroupTypename &item) override {
+            std::cout << std::string(tabs, ' ') << item.id << ":" << std::endl;
+            tabs++;
+            return true;
+        }
+
+        void visitGroup(IDDepthAutoNum::GroupTypename &item) override {
+            std::cout << std::string(tabs, ' ') << item.id << " (" << item.depth << ")" << ":" << std::endl;
+        }
+
+        void exitGroup(IDDepthAutoNum::GroupTypename &item) override {
+            //std::cout << std::string(tabs, ' ') << "<" << std::endl;
+            tabs--;
+        }
+
+    public:
+        int tabs = 0;
+    };
+    IDDepthAutoNumVisitor v;
+
+    g1->accept(v);
+}
+
+int main() {
+    std::cout << std::endl << std::endl << "IDENTIFICABLE" << std::endl;
+    identificable();
+
+    std::cout << std::endl << std::endl << "DEPTH" << std::endl;
+    depth();
+
+    std::cout << std::endl << std::endl << "IDDEPTH" << std::endl;
+    idDepth();
+
+    std::cout << std::endl << std::endl << "ID+DEPTH+AUTONUM" << std::endl;
+    traits3();
 
     return 0;
 }

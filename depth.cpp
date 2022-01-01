@@ -29,6 +29,7 @@ namespace {
 
 }
 
+/*
 template<>
 void Trait<ItemDepth, ItemDepth>::addedPartToGroup(ItemDepth& group, ItemDepth& part) {
     part.depth = group.depth + 1;
@@ -41,3 +42,4 @@ bool DepthTrait::addedGroupToGroup(DepthTrait::TraitGroup& group, DepthTrait::Tr
     part.accept(insertionVisitor);
     return false;
 }
+*/

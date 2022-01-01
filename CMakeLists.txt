@@ -8,4 +8,6 @@ add_executable(traits
         trait.hpp
         depth.cpp
         depth.hpp
+        autonum.hpp
+        autonum.cpp
         )

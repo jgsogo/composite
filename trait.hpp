@@ -11,15 +11,6 @@
  * */
 
 
-template<typename T, typename ...Args>
-static typename std::enable_if<std::is_base_of<void, T>::value, void>::type
-addedPart(Args &&... args) {
-    std::cout << "trait.hpp -- addedPart" << std::endl;
-}
-
-
-//template<typename Part, typename Group>
-//void foo(std::vector<Group>& , Part&);
 struct S {
 };
 
@@ -36,51 +27,18 @@ struct is_add_function<T1, T2, void_t<decltype(foo(std::declval<std::vector<T1> 
 };
 
 
-
 template<typename Part, typename Group, typename CompositeType = void>
 struct Trait {
     using PartTypename = Part;
     using GroupTypename = Group;
+    using CompositeTypename = CompositeType;
 
     class TraitPart;
 
     class TraitGroup;
 
-    static constexpr bool idAddFunction = is_add_function<Group, Part>();
     static constexpr bool isCompose = not std::is_same_v<CompositeType, void>;
-
-    static void addedPartToGroup(Group &group, Part &part) {
-
-    }
-
-    static void addedPartToGroup(TraitGroup &group, TraitPart &part) {
-        addedPartToGroup(static_cast<Group &>(group), static_cast<Part &>(part));
-    }
-
-    static bool addedGroupToGroup(Group &group, Group &part) {
-        return false;
-    }
-
-    static bool addedGroupToGroup(TraitGroup &group, TraitGroup &part) {
-        return addedGroupToGroup(static_cast<Group &>(group), static_cast<Group &>(part));
-    }
-
-
-    //template<typename ...Args>
-    //static void addedPart(/*TraitGroup &group, */Args &&... args) {
-    //    std::cout << "trait.hpp -- addPart" << std::endl;
-    //}
-
-
-    template<typename T, typename ...Args>
-    static typename std::enable_if<std::is_base_of<Group, T>::value, void>::type
-    addedPart(Args &&... args);/* {
-        std::cout << "trait.hpp -- addedPart" << std::endl;
-    }*/
-
-    //static void foo(std::vector<Group>& , Part&);
-    //{
-    //}
+    static constexpr bool idAddFunction = is_add_function<Group, Part>();
 
     class VisitorTrait {
     public:
@@ -155,10 +113,6 @@ struct Trait {
 
         virtual void addPart(std::shared_ptr<TraitBase> item) {
             __addPart(item);
-            //_addPart(item);
-
-            //auto vPack = TPack<TraitGroup>{*this};
-            //item->accept(vPack);
         }
 
         void accept(VisitorTrait &v) override {
@@ -239,9 +193,8 @@ struct Trait {
         }
 
         void visit(TraitPart &part) override {
-            //__visit(part);
             if constexpr(isCompose) {
-                fooCompose<typename CompositeType::Trait1Type, typename CompositeType::Trait2Type>(_chain, (PartTypename &) part);
+                foo<typename CompositeType::Trait1Type, typename CompositeType::Trait2Type>(_chain, (PartTypename &) part);
             } else {
                 foo(_chain, (PartTypename &) part);
             }
@@ -259,6 +212,4 @@ struct Trait {
     protected:
         std::vector<GroupTypename> _chain;
     };
-
-
 };
