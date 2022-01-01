@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <iostream>
 #include "trait.hpp"
 
 
@@ -18,3 +19,7 @@ public:
 
 
 using AutoNumTrait = Trait<AutoNum, AutoNum>;
+
+inline auto foo(std::vector<AutoNum>&, AutoNum&) {
+    std::cout << "AutoNum --- la caña de españa" << std::endl;
+}

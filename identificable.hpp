@@ -27,3 +27,7 @@ public:
 */
 
 using IdenticableTrait = Trait<PartId, PartId>;
+
+inline auto foo(std::vector<PartId>&, PartId&) {
+    std::cout << "PartId --- la caña de españa" << std::endl;
+}
