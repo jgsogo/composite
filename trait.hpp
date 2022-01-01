@@ -2,7 +2,6 @@
 
 #include <memory>
 #include <vector>
-#include <iostream>
 
 
 /*
@@ -123,7 +122,6 @@ struct Trait {
         template<bool enable = idAddFunction>
         typename std::enable_if<enable || isCompose>::type
         __addPart(std::shared_ptr<TraitBase> item) {
-            std::cout << "Impl1 -- hay funcion" << std::endl;
             _children.push_back(item);
             auto vPack = TPack2{*this};
             item->accept(vPack);
@@ -132,7 +130,6 @@ struct Trait {
         template<bool enable = idAddFunction>
         typename std::enable_if<!enable && !isCompose>::type
         __addPart(std::shared_ptr<TraitBase> item) {
-            std::cout << "Impl2  -- no hay" << std::endl;
             _children.push_back(item);
         }
 
