@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <vector>
+#include <iostream>
 
 
 /*
@@ -10,8 +11,33 @@
  * */
 
 
+template<typename T, typename ...Args>
+static typename std::enable_if<std::is_base_of<void, T>::value, void>::type
+addedPart(Args &&... args) {
+    std::cout << "trait.hpp -- addedPart" << std::endl;
+}
 
-template<typename Part, typename Group>
+
+//template<typename Part, typename Group>
+//void foo(std::vector<Group>& , Part&);
+struct S {
+};
+
+void foo(std::vector<S> &, S &);
+
+template<class...> using void_t = void;
+
+template<class, class, class = void>
+struct is_add_function : std::false_type {
+};
+
+template<class T1, class T2>
+struct is_add_function<T1, T2, void_t<decltype(foo(std::declval<std::vector<T1> &>(), std::declval<T2 &>()))>> : std::true_type {
+};
+
+
+
+template<typename Part, typename Group, typename CompositeType = void>
 struct Trait {
     using PartTypename = Part;
     using GroupTypename = Group;
@@ -19,6 +45,9 @@ struct Trait {
     class TraitPart;
 
     class TraitGroup;
+
+    static constexpr bool is_add_function_v = is_add_function<Group, Part>();
+    static constexpr bool isCompose = not std::is_same_v<CompositeType, void>;
 
     static void addedPartToGroup(Group &group, Part &part) {
 
@@ -36,9 +65,22 @@ struct Trait {
         return addedGroupToGroup(static_cast<Group &>(group), static_cast<Group &>(part));
     }
 
-    template<typename ...Args>
-    static void addedPart(/*TraitGroup &group, */Args &&... args) {
-    }
+
+    //template<typename ...Args>
+    //static void addedPart(/*TraitGroup &group, */Args &&... args) {
+    //    std::cout << "trait.hpp -- addPart" << std::endl;
+    //}
+
+
+    template<typename T, typename ...Args>
+    static typename std::enable_if<std::is_base_of<Group, T>::value, void>::type
+    addedPart(Args &&... args);/* {
+        std::cout << "trait.hpp -- addedPart" << std::endl;
+    }*/
+
+    //static void foo(std::vector<Group>& , Part&);
+    //{
+    //}
 
     class VisitorTrait {
     public:
@@ -112,12 +154,11 @@ struct Trait {
         explicit TraitGroup(Args... args) : Group(args...) {};
 
         virtual void addPart(std::shared_ptr<TraitBase> item) {
-            _addPart(item);
-            //InsertionVisitor v{*this};
-            //item->accept(v);
+            __addPart(item);
+            //_addPart(item);
 
-            auto vPack = TPack<TraitGroup>{*this};
-            item->accept(vPack);
+            //auto vPack = TPack<TraitGroup>{*this};
+            //item->accept(vPack);
         }
 
         void accept(VisitorTrait &v) override {
@@ -125,6 +166,22 @@ struct Trait {
         }
 
     protected:
+        template<bool enable = is_add_function_v>
+        typename std::enable_if<enable || isCompose>::type
+        __addPart(std::shared_ptr<TraitBase> item) {
+            std::cout << "Impl1 -- hay funcion" << std::endl;
+            _children.push_back(item);
+            auto vPack = TPack2{*this};
+            item->accept(vPack);
+        }
+
+        template<bool enable = is_add_function_v>
+        typename std::enable_if<!enable && !isCompose>::type
+        __addPart(std::shared_ptr<TraitBase> item) {
+            std::cout << "Impl2  -- no hay" << std::endl;
+            _children.push_back(item);
+        }
+
         void _addPart(std::shared_ptr<TraitBase> item) {
             _children.push_back(item);
         }
@@ -153,7 +210,7 @@ struct Trait {
 
         void visit(TraitPart &part) override {
             auto tt = std::tuple_cat(_chain, std::tie(part));
-            std::apply(&addedPart<Args&..., TraitPart&>, tt);
+            //std::apply(&addedPart<TraitGroup, Args &..., TraitPart &>, tt);
         }
 
         bool enterGroup(TraitGroup &group) override {
@@ -169,5 +226,39 @@ struct Trait {
     protected:
         std::tuple<Args &...> _chain;
     };
+
+
+    class TPack2 : public VisitorTrait {
+    public:
+        explicit TPack2(TraitGroup &gr) {
+            _chain.template emplace_back(gr);
+        }
+
+        TPack2(std::vector<GroupTypename> &v, TraitGroup &gr) : _chain(v) {
+            _chain.template emplace_back(gr);
+        }
+
+        void visit(TraitPart &part) override {
+            //__visit(part);
+            if constexpr(isCompose) {
+                fooCompose<typename CompositeType::Trait1Type, typename CompositeType::Trait2Type>(_chain, (PartTypename &) part);
+            } else {
+                foo(_chain, (PartTypename &) part);
+            }
+        }
+
+        bool enterGroup(TraitGroup &group) override {
+            auto recurse = TPack2{_chain, group};
+            recurse._visitChildren(group);
+            return false;
+        }
+
+        void visitGroup(TraitGroup &group) override {
+        }
+
+    protected:
+        std::vector<GroupTypename> _chain;
+    };
+
 
 };

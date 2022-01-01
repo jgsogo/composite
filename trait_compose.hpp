@@ -6,9 +6,17 @@
  * Trait compose: combine the functionality of two traits to generate a new one
  * */
 
+/*
+template<typename GroupTypename, typename PartTypename>
+inline auto fooCompose(std::vector<GroupTypename> &, PartTypename &) {
+    std::cout << "TraitCompose -- la caña de españa" << std::endl;
+}
+*/
 
 template<typename Trait1, typename Trait2>
 struct TraitCompose {
+    using Trait1Type = Trait1;
+    using Trait2Type = Trait2;
 
     class PartTypename : public Trait1::PartTypename, public Trait2::PartTypename {
     public:
@@ -24,16 +32,24 @@ struct TraitCompose {
 
     };
 
-    using TraitType = Trait<PartTypename, GroupTypename>;
 
-    static void addedPartToGroup(typename TraitType::TraitGroup &group, typename TraitType::TraitPart &part) {
+    template<typename T, typename ...Args>
+    static typename std::enable_if<std::is_base_of<GroupTypename, T>::value, void>::type
+    addedPart(Args &&... args) {
+        std::cout << "trait_compose.hpp -- addedPart" << std::endl;
+    }
+
+    using Trait = Trait<PartTypename, GroupTypename, TraitCompose<Trait1, Trait2>>;
+
+
+    static void addedPartToGroup(typename Trait::TraitGroup &group, typename Trait::TraitPart &part) {
         // TODO: Trait1::addedPartToGroup(static_cast<typename Trait1::TraitGroup&>(group), static_cast<typename Trait1::TraitPart&>(part));
         // TODO: Trait2::addedPartToGroup(static_cast<typename Trait2::TraitGroup&>(group), static_cast<typename Trait2::TraitPart&>(part));
         Trait1::addedPartToGroup(static_cast<typename Trait1::GroupTypename &>(group), static_cast<typename Trait1::PartTypename &>(part));
         Trait2::addedPartToGroup(static_cast<typename Trait2::GroupTypename &>(group), static_cast<typename Trait2::PartTypename &>(part));
     }
 
-    static bool addedGroupToGroup(typename TraitType::TraitGroup &group, typename TraitType::TraitGroup &part) {
+    static bool addedGroupToGroup(typename Trait::TraitGroup &group, typename Trait::TraitGroup &part) {
         // TODO: auto t1 = Trait1::addedGroupToGroup(static_cast<typename Trait1::TraitGroup&>(group), static_cast<typename Trait1::TraitGroup&>(part));
         // TODO: auto t2 = Trait2::addedGroupToGroup(static_cast<typename Trait2::TraitGroup&>(group), static_cast<typename Trait2::TraitGroup&>(part));
         auto t1 = Trait1::addedGroupToGroup(static_cast<typename Trait1::GroupTypename &>(group), static_cast<typename Trait1::GroupTypename &>(part));
@@ -42,7 +58,7 @@ struct TraitCompose {
     }
 
 
-
+    /*
     class ComposeInsertionVisitor;
 
     class TraitGroup : public TraitType::TraitGroup {
@@ -56,6 +72,7 @@ struct TraitCompose {
             //item->accept(v);
         }
     };
+     */
 
     /*
     class ComposeInsertionVisitor : public TraitType::InsertionVisitor {
@@ -71,6 +88,8 @@ struct TraitCompose {
         }
     };
     */
+
+    /*
     struct Trait {
         using PartTypename = typename TraitType::PartTypename;
         using GroupTypename = typename TraitType::GroupTypename;
@@ -80,4 +99,21 @@ struct TraitCompose {
         using TraitGroup = TraitGroup;
         //using InsertionVisitor = typename TraitType::InsertionVisitor;
     };
+     */
+
 };
+
+template<typename Trait1, typename Trait2>
+inline auto fooCompose(std::vector<typename TraitCompose<Trait1, Trait2>::GroupTypename> &, typename TraitCompose<Trait1, Trait2>::PartTypename &) {
+    std::cout << "TraitCompose BUENA -- la caña de españa" << std::endl;
+
+}
+
+
+/*
+template <typename GroupTypename, typename PartTypename>
+inline auto foo(std::vector<GroupTypename>&, PartTypename&) {
+    std::cout << "la caña de españa" << std::endl;
+}
+*/
+
