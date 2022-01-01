@@ -46,7 +46,7 @@ struct Trait {
 
     class TraitGroup;
 
-    static constexpr bool is_add_function_v = is_add_function<Group, Part>();
+    static constexpr bool idAddFunction = is_add_function<Group, Part>();
     static constexpr bool isCompose = not std::is_same_v<CompositeType, void>;
 
     static void addedPartToGroup(Group &group, Part &part) {
@@ -166,7 +166,7 @@ struct Trait {
         }
 
     protected:
-        template<bool enable = is_add_function_v>
+        template<bool enable = idAddFunction>
         typename std::enable_if<enable || isCompose>::type
         __addPart(std::shared_ptr<TraitBase> item) {
             std::cout << "Impl1 -- hay funcion" << std::endl;
@@ -175,7 +175,7 @@ struct Trait {
             item->accept(vPack);
         }
 
-        template<bool enable = is_add_function_v>
+        template<bool enable = idAddFunction>
         typename std::enable_if<!enable && !isCompose>::type
         __addPart(std::shared_ptr<TraitBase> item) {
             std::cout << "Impl2  -- no hay" << std::endl;

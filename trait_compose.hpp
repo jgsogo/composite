@@ -104,9 +104,21 @@ struct TraitCompose {
 };
 
 template<typename Trait1, typename Trait2>
-inline auto fooCompose(std::vector<typename TraitCompose<Trait1, Trait2>::GroupTypename> &, typename TraitCompose<Trait1, Trait2>::PartTypename &) {
+inline auto fooCompose(std::vector<typename TraitCompose<Trait1, Trait2>::GroupTypename> &g, typename TraitCompose<Trait1, Trait2>::PartTypename &p) {
     std::cout << "TraitCompose BUENA -- la caña de españa" << std::endl;
 
+    if constexpr(Trait1::idAddFunction) {
+        std::cout << " >>> Trait1::idAddFunction " << std::endl;
+        std::vector<typename Trait1::GroupTypename> groups;
+        std::transform(g.begin(), g.end(), std::back_inserter(groups), [](auto &item) { return (typename Trait1::GroupTypename &) item; });
+        foo(groups, (typename Trait1::PartTypename&)p);
+    }
+    if constexpr(Trait2::idAddFunction) {
+        std::cout << " >>> Trait2::idAddFunction " << std::endl;
+        std::vector<typename Trait2::GroupTypename> groups;
+        std::transform(g.begin(), g.end(), std::back_inserter(groups), [](auto &item) { return (typename Trait2::GroupTypename &) item; });
+        foo(groups, (typename Trait2::PartTypename&)p);
+    }
 }
 
 
