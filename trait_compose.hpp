@@ -11,21 +11,21 @@ struct TraitCompose {
     using Trait1Type = Trait1;
     using Trait2Type = Trait2;
 
-    class PartTypename : public Trait1::PartTypename, public Trait2::PartTypename {
+    class PartTypename : public Trait1Type::PartTypename, public Trait2Type::PartTypename {
     public:
         template<typename ...Args1, typename ...Args2>
-        explicit PartTypename(Args1... args1, Args2... args2) : Trait1::PartTypename(args2...), Trait2::PartTypename(args1...) {};
+        explicit PartTypename(Args1... args1, Args2... args2) : Trait1Type::PartTypename(args2...), Trait2Type::PartTypename(args1...) {};
 
     };
 
-    class GroupTypename : public Trait1::GroupTypename, public Trait2::GroupTypename {
+    class GroupTypename : public Trait1Type::GroupTypename, public Trait2Type::GroupTypename {
     public:
         template<typename ...Args1, typename ...Args2>
-        explicit GroupTypename(Args1... args1, Args2... args2) : Trait1::GroupTypename(args2...), Trait2::GroupTypename(args1...) {};
+        explicit GroupTypename(Args1... args1, Args2... args2) : Trait1Type::GroupTypename(args2...), Trait2Type::GroupTypename(args1...) {};
 
     };
 
-    using Trait = Trait<PartTypename, GroupTypename, TraitCompose<Trait1, Trait2>>;
+    using Trait = Trait<PartTypename, GroupTypename, TraitCompose<Trait1Type, Trait2Type>>;
 };
 
 template<typename Trait1, typename Trait2>
