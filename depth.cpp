@@ -4,22 +4,27 @@ namespace {
 
     class InsertionDepthVisitor : public DepthTrait::Visitor {
     public:
-        explicit InsertionDepthVisitor(int baseDepth) : baseDepth(baseDepth) {};
+        explicit InsertionDepthVisitor(int baseDepth) : depth(baseDepth) {};
 
         void visit(ItemDepth &item) override {
-            item.depth += baseDepth;
+            item.depth = depth;
         }
 
-        bool enter(ItemDepth &item) override {
-            item.depth += baseDepth;
+        void visitGroup(ItemDepth &item) override {
+            item.depth = depth;
+        }
+
+        bool enterGroup(ItemDepth &) override {
+            depth++;
             return true;
         }
-
-        void exit(ItemDepth &item) override {
+        void exitGroup(ItemDepth &) override {
+            depth--;
         }
 
+
     protected:
-        const int baseDepth;
+        int depth;
     };
 
 }

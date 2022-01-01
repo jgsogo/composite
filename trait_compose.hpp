@@ -29,17 +29,18 @@ struct TraitCompose {
     static void addedPartToGroup(typename TraitType::TraitGroup &group, typename TraitType::TraitPart &part) {
         // TODO: Trait1::addedPartToGroup(static_cast<typename Trait1::TraitGroup&>(group), static_cast<typename Trait1::TraitPart&>(part));
         // TODO: Trait2::addedPartToGroup(static_cast<typename Trait2::TraitGroup&>(group), static_cast<typename Trait2::TraitPart&>(part));
-        Trait1::addedPartToGroup(static_cast<typename Trait1::GroupTypename&>(group), static_cast<typename Trait1::PartTypename&>(part));
-        Trait2::addedPartToGroup(static_cast<typename Trait2::GroupTypename&>(group), static_cast<typename Trait2::PartTypename&>(part));
+        Trait1::addedPartToGroup(static_cast<typename Trait1::GroupTypename &>(group), static_cast<typename Trait1::PartTypename &>(part));
+        Trait2::addedPartToGroup(static_cast<typename Trait2::GroupTypename &>(group), static_cast<typename Trait2::PartTypename &>(part));
     }
 
     static bool addedGroupToGroup(typename TraitType::TraitGroup &group, typename TraitType::TraitGroup &part) {
         // TODO: auto t1 = Trait1::addedGroupToGroup(static_cast<typename Trait1::TraitGroup&>(group), static_cast<typename Trait1::TraitGroup&>(part));
         // TODO: auto t2 = Trait2::addedGroupToGroup(static_cast<typename Trait2::TraitGroup&>(group), static_cast<typename Trait2::TraitGroup&>(part));
-        auto t1 = Trait1::addedGroupToGroup(static_cast<typename Trait1::GroupTypename&>(group), static_cast<typename Trait1::GroupTypename&>(part));
-        auto t2 = Trait2::addedGroupToGroup(static_cast<typename Trait2::GroupTypename&>(group), static_cast<typename Trait2::GroupTypename&>(part));
+        auto t1 = Trait1::addedGroupToGroup(static_cast<typename Trait1::GroupTypename &>(group), static_cast<typename Trait1::GroupTypename &>(part));
+        auto t2 = Trait2::addedGroupToGroup(static_cast<typename Trait2::GroupTypename &>(group), static_cast<typename Trait2::GroupTypename &>(part));
         return t1 && t2; // TODO: what logical operator to use here? bitwise mask?
     }
+
 
 
     class ComposeInsertionVisitor;
@@ -51,11 +52,12 @@ struct TraitCompose {
 
         virtual void addPart(std::shared_ptr<typename TraitType::TraitBase> item) {
             TraitType::TraitGroup::_addPart(item);
-            ComposeInsertionVisitor v{*this};
-            item->accept(v);
+            //ComposeInsertionVisitor v{*this};
+            //item->accept(v);
         }
     };
 
+    /*
     class ComposeInsertionVisitor : public TraitType::InsertionVisitor {
     public:
         explicit ComposeInsertionVisitor(TraitGroup &group) : TraitType::InsertionVisitor(group) {}
@@ -64,11 +66,11 @@ struct TraitCompose {
             addedPartToGroup(TraitType::InsertionVisitor::_group, part);
         }
 
-        bool enter(typename TraitType::TraitGroup &group) override {
-            return addedGroupToGroup(TraitType::InsertionVisitor::_group, group);
+        void visitGroup(typename TraitType::TraitGroup &group) override {
+            addedGroupToGroup(TraitType::InsertionVisitor::_group, group);
         }
     };
-
+    */
     struct Trait {
         using PartTypename = typename TraitType::PartTypename;
         using GroupTypename = typename TraitType::GroupTypename;
@@ -76,6 +78,6 @@ struct TraitCompose {
         using TraitBase = typename TraitType::TraitBase;
         using TraitPart = typename TraitType::TraitPart;
         using TraitGroup = TraitGroup;
-        using InsertionVisitor = typename TraitType::InsertionVisitor;
+        //using InsertionVisitor = typename TraitType::InsertionVisitor;
     };
 };

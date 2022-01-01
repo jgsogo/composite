@@ -12,13 +12,16 @@ void depth() {
             std::cout << "DepthVisitor::visit " << item.depth << std::endl;
         }
 
-        bool enter(ItemDepth &item) override {
-            std::cout << "DepthVisitor::enter " << item.depth << std::endl;
-            return true;
+        void visitGroup(ItemDepth &item) override {
+            std::cout << "DepthVisitor::visitGroup " << item.depth << std::endl;
         }
 
-        void exit(ItemDepth &item) override {
-            std::cout << "DepthVisitor::exit " << item.depth << std::endl;
+        bool enterGroup(ItemDepth &item) override {
+            std::cout << "DepthVisitor::enterGroup " << item.depth << std::endl;
+            return true;
+        }
+        void exitGroup(ItemDepth &item) override {
+            std::cout << "DepthVisitor::exitGroup " << item.depth << std::endl;
         }
 
     };
@@ -47,14 +50,16 @@ void identificable() {
             std::cout << std::string(tabs, ' ') << "part: " << item.id << std::endl;
         }
 
-        bool enter(PartId &item) override {
+        void visitGroup(PartId &item) override {
+            //std::cout << std::string(tabs, ' ') << item.id << ":" << std::endl;
+        }
+
+        bool enterGroup(PartId &item) override {
             std::cout << std::string(tabs, ' ') << item.id << ":" << std::endl;
             tabs++;
             return true;
         }
-
-        void exit(PartId &item) override {
-            std::cout << std::string(tabs, ' ') << "<" << std::endl;
+        void exitGroup(PartId &item) override {
             tabs--;
         }
 
@@ -106,15 +111,18 @@ int main() {
         void visit(IDDepth::PartTypename &item) override {
             std::cout << std::string(tabs, ' ') << "part: " << item.id << " (" << item.depth << ")" << std::endl;
         }
-
-        bool enter(IDDepth::GroupTypename &item) override {
-            std::cout << std::string(tabs, ' ') << item.id << " (" << item.depth << ")" << ":" << std::endl;
+        bool enterGroup(IDDepth::GroupTypename &item) override {
+            std::cout << std::string(tabs, ' ') << item.id << ":" << std::endl;
             tabs++;
             return true;
         }
 
-        void exit(IDDepth::GroupTypename &item) override {
-            std::cout << std::string(tabs, ' ') << "<" << std::endl;
+        void visitGroup(IDDepth::GroupTypename &item) override {
+            std::cout << std::string(tabs, ' ') << item.id << " (" << item.depth << ")" << ":" << std::endl;
+        }
+
+        void exitGroup(IDDepth::GroupTypename &item) override {
+            //std::cout << std::string(tabs, ' ') << "<" << std::endl;
             tabs--;
         }
 
