@@ -103,9 +103,6 @@ struct Trait {
         };
     };
 
-    template<typename ...Args>
-    class TPack;
-
     class TraitGroup : public TraitBase, public Group {
     public:
         friend class VisitorTrait;
@@ -205,7 +202,6 @@ struct Trait {
         void visit(TraitPart &part) override {
             if constexpr(isCompose) {
                 FooCaller<typename CompositeType::Trait1Type, typename CompositeType::TraitsType>::call(_chain, (PartTypename &) part);
-                //foo < typename CompositeType::Trait1Type, typename CompositeType::TraitsType > (_chain, (PartTypename &) part);
             } else {
                 foo(_chain, (PartTypename &) part);
             }
