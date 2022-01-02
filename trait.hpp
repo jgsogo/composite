@@ -16,7 +16,7 @@ struct pack {
 struct S {
 };
 
-void foo(std::vector<S> &, S &);
+void foo(const std::vector<std::reference_wrapper<S>> &, S &);
 
 template<class...> using void_t = void;
 
@@ -25,7 +25,7 @@ struct is_add_function : std::false_type {
 };
 
 template<class T1, class T2>
-struct is_add_function<T1, T2, void_t<decltype(foo(std::declval<std::vector<T1> &>(), std::declval<T2 &>()))>> : std::true_type {
+struct is_add_function<T1, T2, void_t<decltype(foo(std::declval<const std::vector<std::reference_wrapper<T1>> &>(), std::declval<T2 &>()))>> : std::true_type {
 };
 
 
@@ -39,8 +39,8 @@ struct Trait {
 
     class TraitGroup;
 
-    static constexpr bool isCompose = not std::is_same_v<CompositeType, void>;
-    static constexpr bool idAddFunction = is_add_function<Group, Part>();
+    static constexpr bool isCompose = not std::is_same_v<CompositeTypename, void>;
+    static constexpr bool idAddFunction = is_add_function<GroupTypename, Part>();
 
     class VisitorTrait {
     public:
@@ -185,7 +185,7 @@ struct Trait {
             _chain.template emplace_back(gr);
         }
 
-        TPack2(std::vector<GroupTypename> &v, TraitGroup &gr) : _chain(v) {
+        TPack2(std::vector<std::reference_wrapper<GroupTypename>> &v, TraitGroup &gr) : _chain(v) {
             _chain.template emplace_back(gr);
         }
 
@@ -194,14 +194,14 @@ struct Trait {
 
         template<typename T1, typename... T2>
         struct FooCaller<T1, pack<T2...>> {
-            static auto call(std::vector<GroupTypename> &g, PartTypename &p) {
+            static auto call(const std::vector<std::reference_wrapper<GroupTypename>> &g, PartTypename &p) {
                 foo < T1, T2... > (g, p);
             }
         };
 
         void visit(TraitPart &part) override {
             if constexpr(isCompose) {
-                FooCaller<typename CompositeType::Trait1Type, typename CompositeType::TraitsType>::call(_chain, (PartTypename &) part);
+                FooCaller<typename CompositeTypename::Trait1Type, typename CompositeTypename::TraitsType>::call(_chain, (PartTypename &) part);
             } else {
                 foo(_chain, (PartTypename &) part);
             }
@@ -217,6 +217,6 @@ struct Trait {
         }
 
     protected:
-        std::vector<GroupTypename> _chain;
+        std::vector<std::reference_wrapper<GroupTypename>> _chain;
     };
 };

@@ -21,7 +21,4 @@ public:
 using AutoNumTrait = Trait<AutoNum, AutoNum>;
 
 
-inline auto foo(std::vector<AutoNum>&, AutoNum&) {
-    std::cout << "AutoNum --- la caña de españa" << std::endl;
-}
-
+void foo(const std::vector<std::reference_wrapper<AutoNum>> &, AutoNum &);

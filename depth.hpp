@@ -20,6 +20,4 @@ public:
 
 using DepthTrait = Trait<ItemDepth, ItemDepth>;
 
-inline auto foo(std::vector<ItemDepth>&, ItemDepth&) {
-    std::cout << "ItemDepth --- la caña de españa" << std::endl;
-}
+void foo(const std::vector<std::reference_wrapper<ItemDepth>> &, ItemDepth &);
