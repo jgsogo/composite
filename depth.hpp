@@ -2,7 +2,7 @@
 
 #include <string>
 #include <iostream>
-#include "trait.hpp"
+#include "src/trait.hpp"
 
 
 /*
@@ -18,6 +18,6 @@ public:
 };
 
 
-using DepthTrait = Trait<ItemDepth, ItemDepth>;
+using DepthTrait = composite::Trait<ItemDepth, ItemDepth>;
 
 void onPartAdded(const std::vector<std::reference_wrapper<ItemDepth>> &, ItemDepth &);

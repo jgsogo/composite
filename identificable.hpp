@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include "trait.hpp"
+#include "src/trait.hpp"
 
 
 /*
@@ -26,7 +26,7 @@ public:
 };
 */
 
-using IdenticableTrait = Trait<PartId, PartId>;
+using IdenticableTrait = composite::Trait<PartId, PartId>;
 
 inline void onPartAdded(const std::vector<std::reference_wrapper<PartId>> &, PartId &) {
     std::cout << "PartId --- la caña de españa" << std::endl;

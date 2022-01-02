@@ -3,7 +3,7 @@
 #include "identificable.hpp"
 #include "depth.hpp"
 #include "autonum.hpp"
-#include "trait_compose.hpp"
+#include "src/trait_compose.hpp"
 
 void depth() {
     /* DEPTH */
@@ -88,7 +88,7 @@ void identificable() {
 
 void idDepth() {
     // Composition
-    using IDDepth = TraitCompose<IdenticableTrait, DepthTrait>::Trait;
+    using IDDepth = composite::TraitCompose<IdenticableTrait, DepthTrait>::Trait;
 
     auto p1 = std::make_shared<IDDepth::TraitPart>("part1");
     auto p2 = std::make_shared<IDDepth::TraitPart>("part2");
@@ -135,7 +135,7 @@ void idDepth() {
 void traits3() {
     // Composition
     //using IDDepth = TraitCompose<IdenticableTrait, DepthTrait>::Trait;
-    using IDDepthAutoNum = TraitCompose<IdenticableTrait, DepthTrait, AutoNumTrait>::Trait;
+    using IDDepthAutoNum = composite::TraitCompose<IdenticableTrait, DepthTrait, AutoNumTrait>::Trait;
 
     auto p1 = std::make_shared<IDDepthAutoNum::TraitPart>("part1");
     auto p2 = std::make_shared<IDDepthAutoNum::TraitPart>("part2");

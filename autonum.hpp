@@ -2,7 +2,7 @@
 
 #include <string>
 #include <iostream>
-#include "trait.hpp"
+#include "src/trait.hpp"
 
 
 /*
@@ -18,6 +18,6 @@ public:
 };
 
 
-using AutoNumTrait = Trait<AutoNum, AutoNum>;
+using AutoNumTrait = composite::Trait<AutoNum, AutoNum>;
 
 void onPartAdded(const std::vector<std::reference_wrapper<AutoNum>> &, AutoNum &);
