@@ -28,7 +28,7 @@ struct TraitCompose {
 
     };
 
-    using Trait = Trait<PartTypename, GroupTypename, TraitCompose<Trait1Type, Traits...>>;
+    using Trait = Trait<GroupTypename, PartTypename, TraitCompose<Trait1Type, Traits...>>;
 };
 
 template<typename Trait1>

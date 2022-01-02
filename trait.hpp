@@ -29,7 +29,7 @@ struct is_add_function<T1, T2, void_t<decltype(foo(std::declval<const std::vecto
 };
 
 
-template<typename Part, typename Group, typename CompositeType = void>
+template<typename Group, typename Part, typename CompositeType = void>
 struct Trait {
     using PartTypename = Part;
     using GroupTypename = Group;
