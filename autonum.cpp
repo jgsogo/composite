@@ -6,6 +6,6 @@ AutoNum::AutoNum() {
     numId = nItem++;
 }
 
-void foo(const std::vector<std::reference_wrapper<AutoNum>> &, AutoNum &) {
+void onPartAdded(const std::vector<std::reference_wrapper<AutoNum>> &, AutoNum &) {
     std::cout << "AutoNum --- la caña de españa" << std::endl;
 }

@@ -16,7 +16,7 @@ struct pack {
 struct S {
 };
 
-void foo(const std::vector<std::reference_wrapper<S>> &, S &);
+void onPartAdded(const std::vector<std::reference_wrapper<S>> &, S &);
 
 template<class...> using void_t = void;
 
@@ -25,7 +25,7 @@ struct is_add_function : std::false_type {
 };
 
 template<class T1, class T2>
-struct is_add_function<T1, T2, void_t<decltype(foo(std::declval<const std::vector<std::reference_wrapper<T1>> &>(), std::declval<T2 &>()))>> : std::true_type {
+struct is_add_function<T1, T2, void_t<decltype(onPartAdded(std::declval<const std::vector<std::reference_wrapper<T1>> &>(), std::declval<T2 &>()))>> : std::true_type {
 };
 
 
@@ -190,20 +190,20 @@ struct Trait {
         }
 
         template<typename...T>
-        struct FooCaller;
+        struct OnPartAddedCaller;
 
         template<typename T1, typename... T2>
-        struct FooCaller<T1, pack<T2...>> {
+        struct OnPartAddedCaller<T1, pack<T2...>> {
             static auto call(const std::vector<std::reference_wrapper<GroupTypename>> &g, PartTypename &p) {
-                foo < T1, T2... > (g, p);
+                onPartAdded < T1, T2... > (g, p);
             }
         };
 
         void visit(TraitPart &part) override {
             if constexpr(isCompose) {
-                FooCaller<typename CompositeTypename::Trait1Type, typename CompositeTypename::TraitsType>::call(_chain, (PartTypename &) part);
+                OnPartAddedCaller<typename CompositeTypename::Trait1Type, typename CompositeTypename::TraitsType>::call(_chain, (PartTypename &) part);
             } else {
-                foo(_chain, (PartTypename &) part);
+                onPartAdded(_chain, (PartTypename &) part);
             }
         }
 

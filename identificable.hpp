@@ -28,6 +28,6 @@ public:
 
 using IdenticableTrait = Trait<PartId, PartId>;
 
-inline void foo(const std::vector<std::reference_wrapper<PartId>> &, PartId &) {
+inline void onPartAdded(const std::vector<std::reference_wrapper<PartId>> &, PartId &) {
     std::cout << "PartId --- la caña de españa" << std::endl;
 }

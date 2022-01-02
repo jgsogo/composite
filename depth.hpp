@@ -20,4 +20,4 @@ public:
 
 using DepthTrait = Trait<ItemDepth, ItemDepth>;
 
-void foo(const std::vector<std::reference_wrapper<ItemDepth>> &, ItemDepth &);
+void onPartAdded(const std::vector<std::reference_wrapper<ItemDepth>> &, ItemDepth &);

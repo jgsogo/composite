@@ -30,7 +30,7 @@ namespace {
 
 }
 
-void foo(const std::vector<std::reference_wrapper<ItemDepth>> &, ItemDepth &) {
+void onPartAdded(const std::vector<std::reference_wrapper<ItemDepth>> &, ItemDepth &) {
     std::cout << "ItemDepth --- la caña de españa" << std::endl;
 }
 

@@ -20,5 +20,4 @@ public:
 
 using AutoNumTrait = Trait<AutoNum, AutoNum>;
 
-
-void foo(const std::vector<std::reference_wrapper<AutoNum>> &, AutoNum &);
+void onPartAdded(const std::vector<std::reference_wrapper<AutoNum>> &, AutoNum &);
