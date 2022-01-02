@@ -9,6 +9,9 @@
  * base class, a visitor, groups and parts.
  * */
 
+template<typename... Args>
+struct pack {
+};
 
 struct S {
 };
@@ -189,9 +192,20 @@ struct Trait {
             _chain.template emplace_back(gr);
         }
 
+        template<typename...T>
+        struct FooCaller;
+
+        template<typename T1, typename... T2>
+        struct FooCaller<T1, pack<T2...>> {
+            static auto call(std::vector<GroupTypename> &g, PartTypename &p) {
+                foo < T1, T2... > (g, p);
+            }
+        };
+
         void visit(TraitPart &part) override {
             if constexpr(isCompose) {
-                foo<typename CompositeType::Trait1Type, typename CompositeType::Trait2Type>(_chain, (PartTypename &) part);
+                FooCaller<typename CompositeType::Trait1Type, typename CompositeType::TraitsType>::call(_chain, (PartTypename &) part);
+                //foo < typename CompositeType::Trait1Type, typename CompositeType::TraitsType > (_chain, (PartTypename &) part);
             } else {
                 foo(_chain, (PartTypename &) part);
             }

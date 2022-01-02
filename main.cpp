@@ -134,8 +134,8 @@ void idDepth() {
 
 void traits3() {
     // Composition
-    using IDDepth = TraitCompose<IdenticableTrait, DepthTrait>::Trait;
-    using IDDepthAutoNum = TraitCompose<IDDepth, AutoNumTrait>::Trait;
+    //using IDDepth = TraitCompose<IdenticableTrait, DepthTrait>::Trait;
+    using IDDepthAutoNum = TraitCompose<IdenticableTrait, DepthTrait, AutoNumTrait>::Trait;
 
     auto p1 = std::make_shared<IDDepthAutoNum::TraitPart>("part1");
     auto p2 = std::make_shared<IDDepthAutoNum::TraitPart>("part2");
