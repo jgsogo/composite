@@ -3,6 +3,7 @@
 #include <memory>
 #include "impl/on_part_added.hpp"
 #include "impl/visitor_trait.hpp"
+#include "impl/visitor_wrapper_cast.hpp"
 #include "visitor.hpp"
 
 /*
@@ -66,13 +67,19 @@ namespace composite {
                 v._onGroup(*this);
             }
 
-            /*
-            template<bool enable = isCompose>
+            template<typename TGroup, typename TPart, bool enable = isCompose>
             typename std::enable_if<enable>::type
-            accept(_impl::VisitorTrait<typename CompositeTypename::Trait1Type::TraitGroup, typename CompositeTypename::Trait1Type::TraitPart> &v) {
-                //v._onGroup(*this);
+            accept(Visitor<_impl::DFSVisitorTrait<TGroup, TPart>> &v) {
+                _impl::VisitorWrapperCast<TGroup, TPart, TraitGroup, TraitPart, _impl::DFSVisitorTrait> wrapper{v};
+                wrapper._onGroup(*this);
             }
-             */
+
+            template<typename TGroup, typename TPart, bool enable = isCompose>
+            typename std::enable_if<enable>::type
+            accept(Visitor<_impl::BFSVisitorTrait<TGroup, TPart>> &v) {
+                _impl::VisitorWrapperCast<TGroup, TPart, TraitGroup, TraitPart, _impl::BFSVisitorTrait> wrapper{v};
+                wrapper._onGroup(*this);
+            }
 
         protected:
             template<bool enable = idAddFunction>

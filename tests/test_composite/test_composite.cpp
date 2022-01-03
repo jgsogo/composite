@@ -37,10 +37,8 @@ namespace {
     }
 
     using IDTrait = composite::Trait<GroupId, PartId>;
-    using CompositeTrait = composite::TraitCompose<
-            IDTrait,
-            composite::Trait<GroupIdNum, PartIdNum>
-    >::Trait;
+    using IDNumTrait = composite::Trait<GroupIdNum, PartIdNum>;
+    using CompositeTrait = composite::TraitCompose<IDTrait, IDNumTrait>::Trait;
 }
 
 TEST_CASE("test_composite | TraitGroup create", "[test_composite]") {
@@ -114,29 +112,101 @@ TEST_CASE("test_composite | Visitor first trait", "[test_composite]") {
     group2->addPart(part2);
     group1->addPart(group2);
 
+    {
+        class Visitor : public IDTrait::DFSVisitor {
+            /* A visitor dedicated to one of the traits */
+        public:
+            void visit(IDTrait::PartTypename &p) override {
+                ids.push_back(p.idPart);
+            }
 
-    class Visitor : public IDTrait::DFSVisitor {
-        /* A visitor dedicated to one of the traits */
-    public:
-        void visit(IDTrait::PartTypename &p) override {
-            ids.push_back(p.idPart);
-        }
+            void visitGroup(IDTrait::GroupTypename &g) override {
+                ids.push_back(g.idGroup);
+            }
 
-        void visitGroup(IDTrait::GroupTypename &g) override {
-            ids.push_back(g.idGroup);
-        }
+        public:
+            std::vector<std::string> ids;
+        };
+        Visitor visitor;
 
-    public:
-        std::vector<std::string> ids;
-    };
-    Visitor visitor;
+        group1->accept(visitor);
 
-    // TODO: Requires some work
-    //group1->accept(visitor);
+        REQUIRE(visitor.ids == std::vector<std::string>{"part1", "part2", "group2", "group1"});
+    }
+    {
+        class Visitor : public IDTrait::BFSVisitor {
+            /* A visitor dedicated to one of the traits */
+        public:
+            void visit(IDTrait::PartTypename &p) override {
+                ids.push_back(p.idPart);
+            }
 
-    //REQUIRE(visitor.ids == std::vector<std::string>{"part1", "part2", "group2", "group1"});
+            void visitGroup(IDTrait::GroupTypename &g) override {
+                ids.push_back(g.idGroup);
+            }
+
+        public:
+            std::vector<std::string> ids;
+        };
+        Visitor visitor;
+
+        group1->accept(visitor);
+
+        REQUIRE(visitor.ids == std::vector<std::string>{"group1", "part1", "group2", "part2"});
+    }
 }
 
 TEST_CASE("test_composite | Visitor second trait", "[test_composite]") {
-    // TODO: Requires some work
+    auto group1 = std::make_shared<CompositeTrait::TraitGroup>("group1", 11);
+
+    auto part1 = std::make_shared<CompositeTrait::TraitPart>("part1", 21);
+    group1->addPart(part1);
+
+    auto group2 = std::make_shared<CompositeTrait::TraitGroup>("group2", 12);
+    auto part2 = std::make_shared<CompositeTrait::TraitPart>("part2", 22);
+    group2->addPart(part2);
+    group1->addPart(group2);
+
+    {
+        class Visitor : public IDNumTrait::DFSVisitor {
+            /* A visitor dedicated to one of the traits */
+        public:
+            void visit(IDNumTrait::PartTypename &p) override {
+                ids.push_back(p.idNum);
+            }
+
+            void visitGroup(IDNumTrait::GroupTypename &g) override {
+                ids.push_back(g.idNum);
+            }
+
+        public:
+            std::vector<int> ids;
+        };
+        Visitor visitor;
+
+        group1->accept(visitor);
+
+        REQUIRE(visitor.ids == std::vector<int>{21, 22, 12, 11});
+    }
+    {
+        class Visitor : public IDNumTrait::BFSVisitor {
+            /* A visitor dedicated to one of the traits */
+        public:
+            void visit(IDNumTrait::PartTypename &p) override {
+                ids.push_back(p.idNum);
+            }
+
+            void visitGroup(IDNumTrait::GroupTypename &g) override {
+                ids.push_back(g.idNum);
+            }
+
+        public:
+            std::vector<int> ids;
+        };
+        Visitor visitor;
+
+        group1->accept(visitor);
+
+        REQUIRE(visitor.ids == std::vector<int>{11, 21, 12, 22});
+    }
 }

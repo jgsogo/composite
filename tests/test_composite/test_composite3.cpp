@@ -38,14 +38,6 @@ namespace {
         p.breadcrumb1 += p.data1;
     }
 
-    inline void onPartAdded(const std::vector<std::reference_wrapper<Data2>> &gs, Data2 &p) {
-        p.breadcrumb2 = "data2 - ";
-        for (auto g: gs) {
-            p.breadcrumb2+= g.get().data2 + "::";
-        }
-        p.breadcrumb2 += p.data2;
-    }
-
     inline void onPartAdded(const std::vector<std::reference_wrapper<Data3>> &gs, Data3 &p) {
         p.breadcrumb3 = "data3 - ";
         for (auto g: gs) {
@@ -87,7 +79,7 @@ TEST_CASE("test_composite3 | Add part", "[test_composite]") {
     REQUIRE(part->data1 == "p1-1");
     REQUIRE(part->breadcrumb1 == "data1 - g1-1::p1-1");
     REQUIRE(part->data2 == "p1-2");
-    REQUIRE(part->breadcrumb2 == "data2 - g1-2::p1-2");
+    REQUIRE(part->breadcrumb2 == "");  // No addPart function for this one
     REQUIRE(part->data3 == "p1-3");
     REQUIRE(part->breadcrumb3 == "data3 - g1-3::p1-3");
 }
