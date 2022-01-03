@@ -2,7 +2,7 @@
 
 namespace {
 
-    class InsertionDepthVisitor : public DepthTrait::Visitor {
+    class InsertionDepthVisitor : public DepthTrait::DFSVisitor {
     public:
         explicit InsertionDepthVisitor(int baseDepth) : depth(baseDepth) {};
 

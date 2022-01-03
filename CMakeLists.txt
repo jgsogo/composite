@@ -20,3 +20,5 @@ add_executable(executable
         autonum.cpp
         )
 target_link_libraries(executable PUBLIC traits)
+
+add_subdirectory(tests)

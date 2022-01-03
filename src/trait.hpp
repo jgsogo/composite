@@ -22,12 +22,13 @@ namespace composite {
         static constexpr bool isCompose = not std::is_same_v<CompositeTypename, void>;
         static constexpr bool idAddFunction = _impl::is_add_function<GroupTypename, PartTypename>();
 
-        using Visitor = Visitor<Trait<GroupTypename, Part, CompositeTypename>>;
-
-
         class TraitPart;
 
         class TraitGroup;
+
+        using DFSVisitor = Visitor<_impl::DFSVisitorTrait<TraitGroup, TraitPart>>;
+        using BFSVisitor = Visitor<_impl::BFSVisitorTrait<TraitGroup, TraitPart>>;
+
 
         class TraitBase {
         public:
@@ -57,7 +58,7 @@ namespace composite {
             template<typename ...Args>
             explicit TraitGroup(Args... args) : GroupTypename(args...) {};
 
-            virtual void addPart(std::shared_ptr<TraitBase> item) {
+            void addPart(std::shared_ptr<TraitBase> item) {
                 __addPart(item);
             }
 
@@ -124,7 +125,7 @@ namespace composite {
          */
 
 
-        class AddPartVisitor : public _impl::VisitorTrait<TraitGroup, TraitPart> {
+        class AddPartVisitor : public _impl::DFSVisitorTrait<TraitGroup, TraitPart> {
         public:
             explicit AddPartVisitor(TraitGroup &gr) {
                 _chain.template emplace_back(gr);
@@ -156,9 +157,6 @@ namespace composite {
                 auto recurse = AddPartVisitor{_chain, group};
                 recurse._visitChildren(group);
                 return false;
-            }
-
-            void visitGroup(TraitGroup &group) override {
             }
 
         protected:

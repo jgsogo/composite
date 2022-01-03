@@ -7,7 +7,7 @@
 
 void depth() {
     /* DEPTH */
-    class DepthVisitor : public DepthTrait::Visitor {
+    class DepthVisitor : public DepthTrait::DFSVisitor {
     public:
         void visit(ItemDepth &item) override {
             std::cout << "DepthVisitor::visit " << item.depth << std::endl;
@@ -46,7 +46,7 @@ void depth() {
 
 void identificable() {
     /* IDENTIFICABLE */
-    class IdVisitor : public IdenticableTrait::Visitor {
+    class IdVisitor : public IdenticableTrait::DFSVisitor {
     public:
         void visit(PartId &item) override {
             std::cout << std::string(tabs, ' ') << "part: " << item.id << std::endl;
@@ -102,7 +102,7 @@ void idDepth() {
     g2->addPart(p3);
     g1->addPart(g2);
 
-    class IDDepthVisitor : public IDDepth::Visitor {
+    class IDDepthVisitor : public IDDepth::DFSVisitor {
     public:
         void visit(IDDepth::PartTypename &item) override {
             std::cout << std::string(tabs, ' ') << "part: " << item.id << " (" << item.depth << ")" << std::endl;
@@ -150,7 +150,7 @@ void traits3() {
     g2->addPart(p3);
     g1->addPart(g2);
 
-    class IDDepthAutoNumVisitor : public IDDepthAutoNum::Visitor {
+    class IDDepthAutoNumVisitor : public IDDepthAutoNum::DFSVisitor {
     public:
         void visit(IDDepthAutoNum::PartTypename &item) override {
             std::cout << std::string(tabs, ' ') << "part: " << item.id << " (" << item.depth << ")" << std::endl;

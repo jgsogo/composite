@@ -2,17 +2,22 @@
 
 namespace composite::_impl {
 
-    template<typename TraitGroup, typename TraitPart>
+    template<typename TraitGroupT, typename TraitPartT>
     class VisitorTrait {
+    public:
+        using TraitGroup = TraitGroupT;
+        using TraitPart = TraitPartT;
+
     public:
         VisitorTrait() = default;
 
-        virtual void visit(TraitPart &) = 0; //
+        virtual void visit(TraitPart &) {}
 
-        virtual bool enterGroup(TraitGroup &) { return true; }; //
+        virtual bool enterGroup(TraitGroup &) { return true; }
 
-        virtual void visitGroup(TraitGroup &) = 0; //
-        virtual void exitGroup(TraitGroup &) {}; //
+        virtual void visitGroup(TraitGroup &) {}
+
+        virtual void exitGroup(TraitGroup &) {}
 
         void _visitChildren(TraitGroup &group) {
             for (auto &it: group._children) {
@@ -20,14 +25,36 @@ namespace composite::_impl {
             }
         }
 
-        void _onGroup(TraitGroup &group) {
+        virtual void _onGroup(TraitGroup &group) = 0;
+    };
+
+    template<typename TraitGroup, typename TraitPart>
+    class DFSVisitorTrait : public VisitorTrait<TraitGroup, TraitPart> {
+    public:
+        DFSVisitorTrait() = default;
+
+        void _onGroup(TraitGroup &group) override {
             if (this->enterGroup(group)) {
-                // TODO: This is implementing DFS (pre-order) algorithm -- implement others
                 this->_visitChildren(group);
                 this->visitGroup(group);
                 this->exitGroup(group);
             }
         }
     };
+
+    template<typename TraitGroup, typename TraitPart>
+    class BFSVisitorTrait : public VisitorTrait<TraitGroup, TraitPart> {
+    public:
+        BFSVisitorTrait() = default;
+
+        void _onGroup(TraitGroup &group) override {
+            if (this->enterGroup(group)) {
+                this->visitGroup(group);
+                this->_visitChildren(group);
+                this->exitGroup(group);
+            }
+        }
+    };
+
 
 }
