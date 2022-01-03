@@ -10,6 +10,7 @@ add_executable(unit_tests
         main.cpp
         test_trait_simple.cpp
         test_visitor.cpp
+        test_trait_addpart.cpp
         )
 target_link_libraries(unit_tests
         Catch2::Catch2

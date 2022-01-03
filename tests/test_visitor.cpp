@@ -3,24 +3,25 @@
 #include "catch2/catch.hpp"
 #include "../src/trait.hpp"
 
+namespace {
 
-struct PartId {
-    explicit PartId(std::string_view id) : idPart(id) {}
+    struct PartId {
+        explicit PartId(std::string_view id) : idPart(id) {}
 
-    const std::string idPart;
-};
+        const std::string idPart;
+    };
 
-struct GroupId {
-    explicit GroupId(std::string_view id) : idGroup(id) {}
+    struct GroupId {
+        explicit GroupId(std::string_view id) : idGroup(id) {}
 
-    const std::string idGroup;
-};
+        const std::string idGroup;
+    };
 
-using IdTrait = composite::Trait<GroupId, PartId>;
+    using IdTrait = composite::Trait<GroupId, PartId>;
+}
 
 
-
-TEST_CASE("Visitor DFS", "[trait_visitor]") {
+TEST_CASE("Visitor DFS", "[visitor]") {
     auto group1 = std::make_shared<IdTrait::TraitGroup>("group1");
     auto part1 = std::make_shared<IdTrait::TraitPart>("part1");
     group1->addPart(part1);
@@ -32,11 +33,11 @@ TEST_CASE("Visitor DFS", "[trait_visitor]") {
 
     class Visitor : public IdTrait::DFSVisitor {
     public:
-        virtual void visit(PartId &p) {
+        void visit(PartId &p) override {
             ids.push_back(p.idPart);
         }
 
-        virtual void visitGroup(GroupId &g) {
+        void visitGroup(GroupId &g) override {
             ids.push_back(g.idGroup);
         }
 
@@ -49,7 +50,7 @@ TEST_CASE("Visitor DFS", "[trait_visitor]") {
     REQUIRE(visitor.ids == std::vector<std::string>{"part1", "part2", "group2", "group1"});
 }
 
-TEST_CASE("Visitor BFS", "[trait_visitor]") {
+TEST_CASE("Visitor BFS", "[visitor]") {
     auto group1 = std::make_shared<IdTrait::TraitGroup>("group1");
     auto part1 = std::make_shared<IdTrait::TraitPart>("part1");
     group1->addPart(part1);
@@ -61,11 +62,11 @@ TEST_CASE("Visitor BFS", "[trait_visitor]") {
 
     class Visitor : public IdTrait::BFSVisitor {
     public:
-        virtual void visit(PartId &p) {
+        void visit(PartId &p) override {
             ids.push_back(p.idPart);
         }
 
-        virtual void visitGroup(GroupId &g) {
+        void visitGroup(GroupId &g) override {
             ids.push_back(g.idGroup);
         }
 
