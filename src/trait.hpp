@@ -3,7 +3,7 @@
 #include <memory>
 #include "impl/on_part_added.hpp"
 #include "impl/visitor_trait.hpp"
-
+#include "visitor.hpp"
 
 /*
  * Anything we want to define as a trait, needs to inherit from these classes. A trait requires a virtual
@@ -18,30 +18,16 @@ namespace composite {
         using GroupTypename = Group;
         using CompositeTypename = CompositeType;
 
-        class TraitPart;
-
-        class TraitGroup;
 
         static constexpr bool isCompose = not std::is_same_v<CompositeTypename, void>;
         static constexpr bool idAddFunction = _impl::is_add_function<GroupTypename, PartTypename>();
 
+        using Visitor = Visitor<Trait<GroupTypename, Part, CompositeTypename>>;
 
-        class Visitor : public _impl::VisitorTrait<TraitGroup, TraitPart> {
-        public:
-            Visitor() = default;
 
-            virtual void visit(PartTypename &) = 0; //
+        class TraitPart;
 
-            virtual void visitGroup(Group &) = 0; //
-            virtual bool enterGroup(Group &) = 0; //
-            virtual void exitGroup(Group &) = 0; //
-
-        protected:
-            void visit(TraitPart &p) final { this->visit(static_cast<PartTypename &>(p)); }; //
-            void visitGroup(TraitGroup &g) final { this->visitGroup(static_cast<GroupTypename &>(g)); }; //
-            bool enterGroup(TraitGroup &g) final { return this->enterGroup(static_cast<GroupTypename &>(g)); }; //
-            void exitGroup(TraitGroup &g) final { this->exitGroup(static_cast<GroupTypename &>(g)); }; //
-        };
+        class TraitGroup;
 
         class TraitBase {
         public:
@@ -52,6 +38,8 @@ namespace composite {
 
         class TraitPart : public TraitBase, public PartTypename {
         public:
+            using PartTypename = PartTypename;
+        public:
             template<typename ...Args>
             explicit TraitPart(Args... args) : PartTypename(args...) {};
 
@@ -61,6 +49,8 @@ namespace composite {
         };
 
         class TraitGroup : public TraitBase, public GroupTypename {
+        public:
+            using GroupTypename = GroupTypename;
         public:
             friend class _impl::VisitorTrait<TraitGroup, TraitPart>;
 
@@ -80,17 +70,13 @@ namespace composite {
             typename std::enable_if<enable || isCompose>::type
             __addPart(std::shared_ptr<TraitBase> item) {
                 _children.push_back(item);
-                auto vPack = TPack2{*this};
+                auto vPack = AddPartVisitor{*this};
                 item->accept(vPack);
             }
 
             template<bool enable = idAddFunction>
             typename std::enable_if<!enable && !isCompose>::type
             __addPart(std::shared_ptr<TraitBase> item) {
-                _children.push_back(item);
-            }
-
-            void _addPart(std::shared_ptr<TraitBase> item) {
                 _children.push_back(item);
             }
 
@@ -138,13 +124,13 @@ namespace composite {
          */
 
 
-        class TPack2 : public _impl::VisitorTrait<TraitGroup, TraitPart> {
+        class AddPartVisitor : public _impl::VisitorTrait<TraitGroup, TraitPart> {
         public:
-            explicit TPack2(TraitGroup &gr) {
+            explicit AddPartVisitor(TraitGroup &gr) {
                 _chain.template emplace_back(gr);
             }
 
-            TPack2(std::vector<std::reference_wrapper<GroupTypename>> &v, TraitGroup &gr) : _chain(v) {
+            AddPartVisitor(std::vector<std::reference_wrapper<GroupTypename>> &v, TraitGroup &gr) : _chain(v) {
                 _chain.template emplace_back(gr);
             }
 
@@ -167,7 +153,7 @@ namespace composite {
             }
 
             bool enterGroup(TraitGroup &group) override {
-                auto recurse = TPack2{_chain, group};
+                auto recurse = AddPartVisitor{_chain, group};
                 recurse._visitChildren(group);
                 return false;
             }
