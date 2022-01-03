@@ -103,7 +103,7 @@ namespace composite {
 
             bool enterNode(TreeNode &node) override {
                 if constexpr(isCompose) {
-                    OnNodeAddedCaller<typename CompositeTypename::Trait1Type, typename CompositeTypename::TraitsType>::call(_chain, (NodeTypename &) node);
+                    OnNodeAddedCaller<typename CompositeTypename::Tree1Type, typename CompositeTypename::MoreTreesType>::call(_chain, (NodeTypename &) node);
                 } else {
                     onNodeAdded(_chain, (NodeTypename &) node);
                 }

@@ -14,12 +14,12 @@ namespace composite::_impl {
             visitor.visit(static_cast<typename TNode::NodeTypename &>(p));
         }
 
-        bool enterGroup(typename ImplVisitor<ChildTNode>::TreeNode &g) final {
-            return visitor.enterGroup(static_cast<typename TNode::NodeTypename &>(g));
+        bool enterNode(typename ImplVisitor<ChildTNode>::TreeNode &g) final {
+            return visitor.enterNode(static_cast<typename TNode::NodeTypename &>(g));
         }
 
-        void exitGroup(typename ImplVisitor<ChildTNode>::TreeNode &g) final {
-            visitor.exitGroup(static_cast<typename TNode::NodeTypename &>(g));
+        void exitNode(typename ImplVisitor<ChildTNode>::TreeNode &g) final {
+            visitor.exitNode(static_cast<typename TNode::NodeTypename &>(g));
         }
 
     protected:
