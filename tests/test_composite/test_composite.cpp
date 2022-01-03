@@ -37,17 +37,13 @@ namespace {
 }
 
 TEST_CASE("test_composite | TraitGroup create", "[test_composite]") {
-    /*
     auto group = std::make_shared<CompositeTrait::TraitGroup>("group1", 23);
     REQUIRE(group->idGroup == "group1");
     REQUIRE(group->idNum == 23);
-     */
 }
 
 TEST_CASE("test_composite | TraitPart create", "[test_composite]") {
-    /*
     auto part = std::make_shared<CompositeTrait::TraitPart>("part1", 42);
     REQUIRE(part->idPart == "part1");
     REQUIRE(part->idNum == 42);
-     */
 }
