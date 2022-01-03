@@ -2,6 +2,7 @@
 
 #include <memory>
 #include "impl/on_part_added.hpp"
+#include "impl/visitor_trait.hpp"
 
 
 /*
@@ -10,12 +11,6 @@
  * */
 
 namespace composite {
-
-
-    template<typename... Args>
-    struct pack {
-    };
-
 
     template<typename Group, typename Part, typename CompositeType = void>
     struct Trait {
@@ -28,81 +23,55 @@ namespace composite {
         class TraitGroup;
 
         static constexpr bool isCompose = not std::is_same_v<CompositeTypename, void>;
-        static constexpr bool idAddFunction = is_add_function<GroupTypename, Part>();
+        static constexpr bool idAddFunction = _impl::is_add_function<GroupTypename, PartTypename>();
 
-        class VisitorTrait {
-        public:
-            VisitorTrait() = default;
 
-            virtual void visit(TraitPart &) = 0; //
-
-            virtual bool enterGroup(TraitGroup &) { return true; }; //
-
-            virtual void visitGroup(TraitGroup &) = 0; //
-            virtual void exitGroup(TraitGroup &) {}; //
-
-            void _visitChildren(TraitGroup &group) {
-                for (auto &it: group._children) {
-                    it->accept(*this);
-                }
-            }
-
-            void _onGroup(TraitGroup &group) {
-                if (this->enterGroup(group)) {
-                    // TODO: This is implementing DFS (pre-order) algorithm -- implement others
-                    this->_visitChildren(group);
-                    this->visitGroup(group);
-                    this->exitGroup(group);
-                }
-            }
-        };
-
-        class Visitor : public VisitorTrait {
+        class Visitor : public _impl::VisitorTrait<TraitGroup, TraitPart> {
         public:
             Visitor() = default;
 
-            virtual void visit(Part &) = 0; //
+            virtual void visit(PartTypename &) = 0; //
 
             virtual void visitGroup(Group &) = 0; //
             virtual bool enterGroup(Group &) = 0; //
             virtual void exitGroup(Group &) = 0; //
 
         protected:
-            void visit(TraitPart &p) final { this->visit(static_cast<Part &>(p)); }; //
-            void visitGroup(TraitGroup &g) final { this->visitGroup(static_cast<Group &>(g)); }; //
-            bool enterGroup(TraitGroup &g) final { return this->enterGroup(static_cast<Group &>(g)); }; //
-            void exitGroup(TraitGroup &g) final { this->exitGroup(static_cast<Group &>(g)); }; //
+            void visit(TraitPart &p) final { this->visit(static_cast<PartTypename &>(p)); }; //
+            void visitGroup(TraitGroup &g) final { this->visitGroup(static_cast<GroupTypename &>(g)); }; //
+            bool enterGroup(TraitGroup &g) final { return this->enterGroup(static_cast<GroupTypename &>(g)); }; //
+            void exitGroup(TraitGroup &g) final { this->exitGroup(static_cast<GroupTypename &>(g)); }; //
         };
 
         class TraitBase {
         public:
             TraitBase() = default;
 
-            virtual void accept(VisitorTrait &v) = 0;
+            virtual void accept(_impl::VisitorTrait<TraitGroup, TraitPart> &v) = 0;
         };
 
-        class TraitPart : public TraitBase, public Part {
+        class TraitPart : public TraitBase, public PartTypename {
         public:
             template<typename ...Args>
-            explicit TraitPart(Args... args) : Part(args...) {};
+            explicit TraitPart(Args... args) : PartTypename(args...) {};
 
-            void accept(VisitorTrait &v) override {
+            void accept(_impl::VisitorTrait<TraitGroup, TraitPart> &v) override {
                 v.visit(*this);
             };
         };
 
-        class TraitGroup : public TraitBase, public Group {
+        class TraitGroup : public TraitBase, public GroupTypename {
         public:
-            friend class VisitorTrait;
+            friend class _impl::VisitorTrait<TraitGroup, TraitPart>;
 
             template<typename ...Args>
-            explicit TraitGroup(Args... args) : Group(args...) {};
+            explicit TraitGroup(Args... args) : GroupTypename(args...) {};
 
             virtual void addPart(std::shared_ptr<TraitBase> item) {
                 __addPart(item);
             }
 
-            void accept(VisitorTrait &v) override {
+            void accept(_impl::VisitorTrait<TraitGroup, TraitPart> &v) override {
                 v._onGroup(*this);
             }
 
@@ -169,7 +138,7 @@ namespace composite {
          */
 
 
-        class TPack2 : public VisitorTrait {
+        class TPack2 : public _impl::VisitorTrait<TraitGroup, TraitPart> {
         public:
             explicit TPack2(TraitGroup &gr) {
                 _chain.template emplace_back(gr);
@@ -183,9 +152,9 @@ namespace composite {
             struct OnPartAddedCaller;
 
             template<typename T1, typename... T2>
-            struct OnPartAddedCaller<T1, pack<T2...>> {
+            struct OnPartAddedCaller<T1, std::tuple<T2...>> {
                 static auto call(const std::vector<std::reference_wrapper<GroupTypename>> &g, PartTypename &p) {
-                    onPartAdded < T1, T2...>(g, p);
+                    onPartAdded<T1, T2...>(g, p);
                 }
             };
 

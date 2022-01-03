@@ -5,22 +5,25 @@
 
 
 namespace composite {
-    struct S {
-    };
+    namespace _impl {
 
-    void onPartAdded(const std::vector<std::reference_wrapper<S>> &, S &);
+        // Naïve class and function,
+        struct S {
+        };
 
-//    namespace _impl {
+        void onPartAdded(const std::vector<std::reference_wrapper<S>> &, S &);
 
-    template<class...> using void_t = void;
+        // Template trait to check for overload
+        template<class...> using void_t = void;
 
-    template<class, class, class = void>
-    struct is_add_function : std::false_type {
-    };
+        template<class, class, class = void>
+        struct is_add_function : std::false_type {
+        };
 
-    template<class T1, class T2>
-    struct is_add_function<T1, T2, void_t<decltype(onPartAdded(std::declval<const std::vector<std::reference_wrapper<T1>> &>(), std::declval<T2 &>()))>>
-            : std::true_type {
-    };
-    //  }
+        template<class T1, class T2>
+        struct is_add_function<T1, T2, void_t<decltype(onPartAdded(std::declval<const std::vector<std::reference_wrapper<T1>> &>(), std::declval<T2 &>()))>>
+                : std::true_type {
+        };
+
+    }
 }

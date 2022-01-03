@@ -12,7 +12,7 @@ namespace composite {
     struct TraitCompose {
         using Trait1Type = Trait1;
         using Trait2Type = typename TraitCompose<Traits...>::Trait;
-        using TraitsType = pack<Traits...>;
+        using TraitsType = std::tuple<Traits...>;
 
         class PartTypename : public Trait1Type::PartTypename, public Trait2Type::PartTypename {
         public:

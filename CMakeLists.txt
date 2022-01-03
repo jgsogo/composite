@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 20)
 
 add_library(traits INTERFACE
         src/impl/on_part_added.hpp
+        src/impl/visitor_trait.hpp
         src/trait.hpp
         src/trait_compose.hpp
         )
