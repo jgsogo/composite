@@ -17,14 +17,14 @@ namespace composite {
         class PartTypename : public Trait1Type::PartTypename, public Trait2Type::PartTypename {
         public:
             template<typename ...Args1, typename ...Args2>
-            explicit PartTypename(Args1... args1, Args2... args2) : Trait1Type::PartTypename(args2...), Trait2Type::PartTypename(args1...) {};
+            explicit PartTypename(Args1... args1, Args2... args2) : Trait1Type::PartTypename(args1...), Trait2Type::PartTypename(args2...) {};
 
         };
 
         class GroupTypename : public Trait1Type::GroupTypename, public Trait2Type::GroupTypename {
         public:
             template<typename ...Args1, typename ...Args2>
-            explicit GroupTypename(Args1... args1, Args2... args2) : Trait1Type::GroupTypename(args2...), Trait2Type::GroupTypename(args1...) {};
+            explicit GroupTypename(Args1... args1, Args2... args2) : Trait1Type::GroupTypename(args1...), Trait2Type::GroupTypename(args2...) {};
 
         };
 
