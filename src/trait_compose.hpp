@@ -17,33 +17,34 @@ namespace composite {
 
 
         template<typename...Ts1>
-        class PartTypename;
+        class PartTypenameT;
 
         template<typename ... Ts1, typename ... Ts2>
-        class PartTypename<std::tuple<Ts1...>, std::tuple<Ts2...>> : public Trait1Type::PartTypename, public Trait2Type::PartTypename {
+        class PartTypenameT<std::tuple<Ts1...>, std::tuple<Ts2...>> : public Trait1Type::PartTypename, public Trait2Type::PartTypename {
         public:
-            explicit PartTypename(Ts1... args1, Ts2... args2) : Trait1Type::PartTypename(args1...), Trait2Type::PartTypename(args2...) {};
+            explicit PartTypenameT(Ts1... args1, Ts2... args2) : Trait1Type::PartTypename(args1...), Trait2Type::PartTypename(args2...) {};
         };
 
 
         template<typename...Ts1>
-        class GroupTypename;
+        class GroupTypenameT;
 
         template<typename ... Ts1, typename ... Ts2>
-        class GroupTypename<std::tuple<Ts1...>, std::tuple<Ts2...>> : public Trait1Type::GroupTypename, public Trait2Type::GroupTypename {
+        class GroupTypenameT<std::tuple<Ts1...>, std::tuple<Ts2...>> : public Trait1Type::GroupTypename, public Trait2Type::GroupTypename {
         public:
-            explicit GroupTypename(Ts1... args1, Ts2... args2) : Trait1Type::GroupTypename(args1...), Trait2Type::GroupTypename(args2...) {};
+            explicit GroupTypenameT(Ts1... args1, Ts2... args2) : Trait1Type::GroupTypename(args1...), Trait2Type::GroupTypename(args2...) {};
         };
 
-        // TALK: Ojo conseguir los parámetros de un constructor (tiene limitaciones, como que encuentra sólo el primer ctor)
+        // TALK: Ojo! conseguir los parámetros de un constructor (tiene limitaciones, como que encuentra sólo el primer ctor)
         using Trait1PartTypenameCtorParams = refl::as_tuple<typename Trait1Type::PartTypename>;
         using Trait2PartTypenameCtorParams = refl::as_tuple<typename Trait2Type::PartTypename>;
         using Trait1GroupTypenameCtorParams = refl::as_tuple<typename Trait1Type::GroupTypename>;
         using Trait2GroupTypenameCtorParams = refl::as_tuple<typename Trait2Type::GroupTypename>;
         static constexpr bool useComposite = Trait1Type::idAddFunction or TraitCompose<Traits...>::useComposite;
 
-        using Trait = Trait<GroupTypename<Trait1GroupTypenameCtorParams, Trait2GroupTypenameCtorParams>,
-                PartTypename<Trait1PartTypenameCtorParams, Trait2PartTypenameCtorParams>,
+        using GroupTypename = GroupTypenameT<Trait1GroupTypenameCtorParams, Trait2GroupTypenameCtorParams>;
+        using PartTypename = PartTypenameT<Trait1PartTypenameCtorParams, Trait2PartTypenameCtorParams>;
+        using Trait = Trait<GroupTypename, PartTypename,
                 typename std::conditional<useComposite, TraitCompose<Trait1Type, Traits...>, void>::type>;
     };
 

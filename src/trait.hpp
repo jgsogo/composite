@@ -66,6 +66,14 @@ namespace composite {
                 v._onGroup(*this);
             }
 
+            /*
+            template<bool enable = isCompose>
+            typename std::enable_if<enable>::type
+            accept(_impl::VisitorTrait<typename CompositeTypename::Trait1Type::TraitGroup, typename CompositeTypename::Trait1Type::TraitPart> &v) {
+                //v._onGroup(*this);
+            }
+             */
+
         protected:
             template<bool enable = idAddFunction>
             typename std::enable_if<enable || isCompose>::type

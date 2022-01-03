@@ -14,6 +14,7 @@ add_executable(unit_tests
         test_single/test_trait_addpart.cpp
 
         test_composite/test_composite.cpp
+        test_composite/test_composite3.cpp
         )
 target_link_libraries(unit_tests
         Catch2::Catch2
