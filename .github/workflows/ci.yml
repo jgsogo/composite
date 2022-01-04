@@ -1,7 +1,7 @@
 name: CI
 on: [push]
 jobs:
-  build_emscripten:
+  build_and_test:
     runs-on: ubuntu-latest
     container:
       image: conanio/gcc11-ubuntu16.04:1.44.0
