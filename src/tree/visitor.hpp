@@ -1,6 +1,6 @@
 #pragma once
 
-namespace composite {
+namespace composite::_impl {
 
     template<typename VisitorTrait>
     class Visitor : public VisitorTrait {
