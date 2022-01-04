@@ -4,6 +4,7 @@
 #include <vector>
 #include "graph_undirected/visitor_graph.hpp"
 #include "graph_undirected/visitor.hpp"
+#include "graph_undirected/is_add_function.hpp"
 
 
 namespace composite {
@@ -19,7 +20,8 @@ namespace composite {
         using CompositeTypename = CompositeType;
 
         static constexpr bool isCompose = not std::is_same_v<CompositeTypename, void>;
-        //static constexpr bool isOnNodeAdded = _impl::is_onNodeAdded<NodeTypename>();
+        static constexpr bool isOnNodeAdded = _impl::graph::is_onNodeAdded<NodeTypename>();
+        static constexpr bool isOnEdgeAdded = _impl::graph::is_onEdgeAdded<NodeTypename, EdgeTypename>();
 
         class GraphNode;
 
@@ -28,13 +30,17 @@ namespace composite {
         using DFSPreOrderVisitor = _impl::graph::Visitor<_impl::graph::DFSPreOrderVisitorGraph<GraphNode, GraphEdge>>;
         using BFSVisitor = _impl::graph::Visitor<_impl::graph::BFSVisitorGraph<GraphNode, GraphEdge>>;
 
+        class AddNodeVisitor;
 
         class GraphNode : public NodeTypename {
         public:
             using NodeTypename = GraphUndirected::NodeTypename;
         public:
             friend class _impl::graph::BFSVisitorGraph<GraphNode, GraphEdge>;
+
             friend class _impl::graph::DFSPreOrderVisitorGraph<GraphNode, GraphEdge>;
+
+            friend class AddNodeVisitor;
 
 
             template<typename ...Args>
@@ -48,6 +54,12 @@ namespace composite {
                 auto edge = std::make_shared<GraphEdge>(*this, *item, argsEdge...);
                 _edges.push_back(std::make_pair(std::ref(*item), edge));
                 item->_edges.push_back(std::make_pair(std::ref(*this), edge));
+
+                if constexpr(isOnNodeAdded || isOnEdgeAdded) {
+                    auto vPack = AddNodeVisitor{*this};
+                    vPack.start(*this);
+                }
+
                 return edge;
 
                 // TODO: On node connected
@@ -100,6 +112,7 @@ namespace composite {
             using EdgeTypename = GraphUndirected::EdgeTypename;
         public:
             friend class _impl::graph::BFSVisitorGraph<GraphNode, GraphEdge>;
+
             friend class _impl::graph::DFSPreOrderVisitorGraph<GraphNode, GraphEdge>;
 
             template<typename ...Args>
@@ -119,5 +132,28 @@ namespace composite {
             GraphNode &_origin;
             GraphNode &_target;
         };
+
+        class AddNodeVisitor : public _impl::graph::DFSPreOrderVisitorGraph<GraphNode, GraphEdge> {
+        public:
+            explicit AddNodeVisitor(GraphNode &node) : _node(node) {}
+
+            void visit(GraphNode &other) override {
+                if constexpr(isOnNodeAdded) {
+                    if (_node._uniqueId != other._uniqueId) {
+                        onNodeAdded(_node, other);
+                    }
+                }
+            }
+
+            void visit(GraphEdge &other) override {
+                if constexpr(isOnEdgeAdded) {
+                    onEdgeAdded(_node, other);
+                }
+            }
+
+        protected:
+            const GraphNode &_node;
+        };
+
     };
 }

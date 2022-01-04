@@ -28,7 +28,7 @@ TEST_CASE("test_graph_undirected/test_simple | Node create", "[node_create]") {
     REQUIRE(node->idNum == 23);
 }
 
-TEST_CASE("test_graph_undirected/test_simple | Edge create", "[node_create]") {
+TEST_CASE("test_graph_undirected/test_simple | Edge create", "[edge_create]") {
     auto node1 = std::make_shared<IdGraphUndirected::GraphNode>("node1", 1);
     auto node2 = std::make_shared<IdGraphUndirected::GraphNode>("node2", 2);
 
