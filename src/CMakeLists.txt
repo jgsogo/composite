@@ -10,8 +10,8 @@ add_library(traits INTERFACE
         trait_compose.hpp
 
         # Tree implementation
-        tree/tree.hpp
-        tree/visitor.hpp
+        tree.hpp
+        tree_composite.hpp
         )
 set_target_properties(traits PROPERTIES LINKER_LANGUAGE CXX)
 target_include_directories(traits INTERFACE ${CMAKE_CURRENT_LIST_DIR})
