@@ -1,7 +1,7 @@
 
 #include <string>
 #include "catch2/catch.hpp"
-#include "tree/tree.hpp"
+#include "tree.hpp"
 
 namespace {
 

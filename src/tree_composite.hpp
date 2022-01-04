@@ -1,7 +1,7 @@
 #pragma once
 
 #include "tree.hpp"
-#include "../impl/refl.hpp"
+#include "impl/refl.hpp"
 
 /*
  * Trait compose: combine the functionality of two traits to generate a new one

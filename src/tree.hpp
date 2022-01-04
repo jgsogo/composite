@@ -1,9 +1,9 @@
 #pragma once
 
-#include "_is_add_function.hpp"
-#include "_visitor_tree.hpp"
-#include "_visitor_wrapper_cast.hpp"
-#include "visitor.hpp"
+#include "tree/_is_add_function.hpp"
+#include "tree/_visitor_tree.hpp"
+#include "tree/_visitor_wrapper_cast.hpp"
+#include "tree/visitor.hpp"
 
 namespace composite {
 
