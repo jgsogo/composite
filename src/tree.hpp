@@ -22,7 +22,7 @@ namespace composite {
 
         class TreeNode : public NodeTypename {
         public:
-            using NodeTypename = NodeTypename;
+            using NodeTypename = Tree::NodeTypename;
         public:
             friend class _impl::VisitorTree<TreeNode>;
 

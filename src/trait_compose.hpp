@@ -44,7 +44,7 @@ namespace composite {
 
         using GroupTypename = GroupTypenameT<Trait1GroupTypenameCtorParams, Trait2GroupTypenameCtorParams>;
         using PartTypename = PartTypenameT<Trait1PartTypenameCtorParams, Trait2PartTypenameCtorParams>;
-        using Trait = Trait<GroupTypename, PartTypename,
+        using Trait = ::composite::Trait<GroupTypename, PartTypename,
                 typename std::conditional<useComposite, TraitCompose<Trait1Type, Traits...>, void>::type>;
     };
 

@@ -31,7 +31,7 @@ namespace composite {
         static constexpr bool useComposite = Tree1Type::isOnNodeAdded or TreeCompose<MoreTrees...>::useComposite;
 
         using NodeTypename = NodeTypenameT<Tree1NodeTypenameCtorParams, Tree2NodeTypenameCtorParams>;
-        using Tree = Tree<NodeTypename,
+        using Tree = ::composite::Tree<NodeTypename,
                 typename std::conditional<useComposite, TreeCompose<Tree1Type, MoreTrees...>, void>::type>;
     };
 
