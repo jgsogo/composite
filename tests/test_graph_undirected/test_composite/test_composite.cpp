@@ -22,19 +22,19 @@ namespace {
         NodeIdNum(int idNum) : idNum(idNum) {}
 
         int idNum = 0;
-        int depth = 0;
+        int family = -1;
     };
 
     struct EdgeIdNum {
         EdgeIdNum(int idNum) : idNum(idNum) {}
 
         int idNum = 0;
-        int depth = 0;
+        int family = -1;
     };
 
 
     inline void onNodeAdded(const NodeIdNum &gs, NodeIdNum &p) {
-        p.depth = gs.depth;
+        p.family = gs.family;
     }
 
     using IDGraph = composite::GraphUndirected<NodeId, EdgeId>;
@@ -52,28 +52,34 @@ TEST_CASE("test_graph_undirected/test_composite | Assert traits", "[test_composi
     REQUIRE(CompositeGraph::isCompose);
 }
 
-/*
+
 TEST_CASE("test_graph_undirected/test_composite | Node create", "[test_composite]") {
-    auto root = std::make_shared<CompositeTree::TreeNode>("root", 23);
+    auto root = std::make_shared<CompositeGraph::GraphNode>("root", 23);
     REQUIRE(root->id == "root");
     REQUIRE(root->idNum == 23);
-    REQUIRE(root->depth == 0);
+    REQUIRE(root->family == -1);
 }
 
 TEST_CASE("test_graph_undirected/test_composite | onNodeAdded function", "[test_composite]") {
-    auto root = std::make_shared<CompositeTree::TreeNode>("root", 23);
-    auto node1 = std::make_shared<CompositeTree::TreeNode>("node1", 42);
-    root->addChild(node1);
+    auto n1 = std::make_shared<CompositeGraph::GraphNode>("n1", 23);
+    n1->family = 23;
+    auto n2 = std::make_shared<CompositeGraph::GraphNode>("n2", 42);
+    auto e12 = n1->connect(n2, "e12", 11);
 
-    REQUIRE(root->id == "root");
-    REQUIRE(root->idNum == 23);
-    REQUIRE(root->depth == 0);
+    REQUIRE(n1->id == "n1");
+    REQUIRE(n1->idNum == 23);
+    REQUIRE(n1->family == 23);
 
-    REQUIRE(node1->id == "node1");
-    REQUIRE(node1->idNum == 42);
-    REQUIRE(node1->depth == 1);
+    REQUIRE(n2->id == "n2");
+    REQUIRE(n2->idNum == 42);
+    REQUIRE(n2->family == 23);
+
+    REQUIRE(e12->id == "e12");
+    REQUIRE(e12->idNum == 11);
+    REQUIRE(e12->family == -1);  // The family of edges is not updated, there is no 'onEdgeAdded' function
 }
 
+/*
 TEST_CASE("test_graph_undirected/test_composite | Visitor composite", "[test_composite]") {
     auto root = std::make_shared<CompositeTree::TreeNode>("root", 0);
     auto node1 = std::make_shared<CompositeTree::TreeNode>("node1", 1);

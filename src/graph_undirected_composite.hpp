@@ -49,4 +49,43 @@ namespace composite {
         using Graph = Graph1;
         static constexpr bool useComposite = Graph1::isOnNodeAdded or Graph1::isOnEdgeAdded;
     };
+
+    template<typename Graph1, typename... MoreGraphs>
+    inline auto onNodeAdded(const typename GraphUndirectedCompose<Graph1, MoreGraphs...>::NodeTypename &g,
+                            typename GraphUndirectedCompose<Graph1, MoreGraphs...>::NodeTypename &p) {
+        if constexpr(Graph1::isOnNodeAdded) {
+            onNodeAdded(g, (typename Graph1::NodeTypename &) p);
+        }
+
+        if constexpr(sizeof...(MoreGraphs) > 1) {
+            onNodeAdded<MoreGraphs...>(g, (typename GraphUndirectedCompose<MoreGraphs...>::Graph::NodeTypename &) p);
+        }
+
+        if constexpr(sizeof...(MoreGraphs) == 1) {
+            using GraphType = typename GraphUndirectedCompose<MoreGraphs...>::Graph;
+            if constexpr(GraphType::isOnNodeAdded) {
+                onNodeAdded(g, (typename GraphType::NodeTypename &) p);
+            }
+        }
+    }
+
+    template<typename Graph1, typename... MoreGraphs>
+    inline auto onEdgeAdded(const typename GraphUndirectedCompose<Graph1, MoreGraphs...>::NodeTypename &g,
+                            typename GraphUndirectedCompose<Graph1, MoreGraphs...>::EdgeTypename &p) {
+        if constexpr(Graph1::isOnNodeAdded) {
+            onEdgeAdded(g, (typename Graph1::NodeTypename &) p);
+        }
+
+        if constexpr(sizeof...(MoreGraphs) > 1) {
+            onEdgeAdded<MoreGraphs...>(g, (typename GraphUndirectedCompose<MoreGraphs...>::Graph::EdgeTypename &) p);
+        }
+
+        if constexpr(sizeof...(MoreGraphs) == 1) {
+            using GraphType = typename GraphUndirectedCompose<MoreGraphs...>::Graph;
+            if constexpr(GraphType::isOnNodeAdded) {
+                onEdgeAdded(g, (typename GraphType::EdgeTypename &) p);
+            }
+        }
+    }
+
 }

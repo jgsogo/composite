@@ -120,17 +120,47 @@ namespace composite {
         public:
             explicit AddNodeVisitor(GraphNode &node) : _node(node) {}
 
+            template<typename...T>
+            struct OnNodeAddedCaller;
+
+            template<typename T1, typename... T2>
+            struct OnNodeAddedCaller<T1, std::tuple<T2...>> {
+                static auto call(const NodeTypename &g, NodeTypename &p) {
+                    onNodeAdded<T1, T2...>(g, p);
+                }
+            };
+
             void visit(GraphNode &other) override {
                 if constexpr(isOnNodeAdded) {
                     if (_node._uniqueId != other._uniqueId) {
-                        onNodeAdded(_node, other);
+                        if constexpr(isCompose) {
+                            OnNodeAddedCaller<typename CompositeTypename::Graph1Type, typename CompositeTypename::MoreGraphsType>::call(_node,
+                                                                                                                                        (NodeTypename &) other);
+                        } else {
+                            onNodeAdded(_node, other);
+                        }
                     }
                 }
             }
 
+            template<typename...T>
+            struct OnEdgeAddedCaller;
+
+            template<typename T1, typename... T2>
+            struct OnEdgeAddedCaller<T1, std::tuple<T2...>> {
+                static auto call(const NodeTypename &g, EdgeTypename &p) {
+                    onEdgeAdded<T1, T2...>(g, p);
+                }
+            };
+
             void visit(GraphEdge &other) override {
                 if constexpr(isOnEdgeAdded) {
-                    onEdgeAdded(_node, other);
+                    if constexpr(isCompose) {
+                        OnEdgeAddedCaller<typename CompositeTypename::Graph1Type, typename CompositeTypename::MoreGraphsType>::call(_node,
+                                                                                                                                    (EdgeTypename &) other);
+                    } else {
+                        onEdgeAdded(_node, other);
+                    }
                 }
             }
 
