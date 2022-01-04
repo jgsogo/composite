@@ -40,7 +40,7 @@ namespace composite {
 
         class TraitPart : public TraitBase, public PartTypename {
         public:
-            using PartTypename = PartTypename;
+            using PartTypename = Trait::PartTypename;
         public:
             template<typename ...Args>
             explicit TraitPart(Args... args) : PartTypename(args...) {};
@@ -52,7 +52,7 @@ namespace composite {
 
         class TraitGroup : public TraitBase, public GroupTypename {
         public:
-            using GroupTypename = GroupTypename;
+            using GroupTypename = Trait::GroupTypename;
         public:
             friend class _impl::VisitorTrait<TraitGroup, TraitPart>;
 
