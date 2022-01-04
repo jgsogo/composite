@@ -30,7 +30,7 @@ namespace composite {
             explicit TreeNode(Args... args) : NodeTypename(args...) {};
 
             void addChild(std::shared_ptr<TreeNode> item) {
-                __addChild(item);
+                _addChild(item);
             }
 
             void accept(_impl::VisitorTree<TreeNode> &v) {
@@ -54,7 +54,7 @@ namespace composite {
         protected:
             template<bool enable = isOnNodeAdded>
             typename std::enable_if<enable || isCompose>::type
-            __addChild(std::shared_ptr<TreeNode> item) {
+            _addChild(std::shared_ptr<TreeNode> item) {
                 _children.push_back(item);
                 auto vPack = AddNodeVisitor{*this};
                 item->accept(vPack);
@@ -62,7 +62,7 @@ namespace composite {
 
             template<bool enable = isOnNodeAdded>
             typename std::enable_if<!enable && !isCompose>::type
-            __addChild(std::shared_ptr<TreeNode> item) {
+            _addChild(std::shared_ptr<TreeNode> item) {
                 _children.push_back(item);
             }
 
