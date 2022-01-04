@@ -27,11 +27,12 @@ jobs:
           conan config set general.revisions_enabled=1
           conan config install https://github.com/conan-io/conanclientcert.git
           conan --version
+          conan config home
 
       - name: Prepare deps
         working-directory: /home/conan/${{ github.event.repository.name }}
         run: |
-          cp -R .conan/profiles /home/conan/.conan/profiles
+          cp -r .conan/profiles /home/conan/.conan/profiles
           conan profile list
           mkdir cmake-build-cpp20
 
