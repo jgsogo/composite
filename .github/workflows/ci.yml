@@ -14,6 +14,7 @@ jobs:
         run: |
           git clone https://github.com/${{ github.repository }}.git
           cd ${{ github.event.repository.name }}
+          git pull --all
           git checkout ${{ github.ref }}
 
       - name: Cache Conan packages
