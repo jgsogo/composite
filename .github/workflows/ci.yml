@@ -32,7 +32,7 @@ jobs:
       - name: Prepare deps
         working-directory: /home/conan/${{ github.event.repository.name }}
         run: |
-          cp -r .conan/profiles /home/conan/.conan/profiles
+          cp -r .conan/profiles /home/conan/.conan
           conan profile list
           mkdir cmake-build-cpp20
 
