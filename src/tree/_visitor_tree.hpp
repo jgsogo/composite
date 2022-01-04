@@ -30,7 +30,7 @@ namespace composite::_impl {
     public:
         DFSVisitorTree() = default;
 
-        void _onNode(TreeNodeT &node) override {
+        void _onNode(TreeNodeT &node) final {
             if (this->enterNode(node)) {
                 this->_visitChildren(node);
                 this->visit(node);
@@ -44,7 +44,7 @@ namespace composite::_impl {
     public:
         BFSVisitorTree() = default;
 
-        void _onNode(TreeNodeT &node) override {
+        void _onNode(TreeNodeT &node) final {
             if (this->enterNode(node)) {
                 this->visit(node);
                 this->_visitChildren(node);
