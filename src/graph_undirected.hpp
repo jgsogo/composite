@@ -61,8 +61,6 @@ namespace composite {
                 }
 
                 return edge;
-
-                // TODO: On node connected
             }
 
         protected:
@@ -85,22 +83,7 @@ namespace composite {
                 wrapper._onNode(*this);
             }
             */
-        protected:
-            /*
-            template<bool enable = isOnNodeAdded>
-            typename std::enable_if<enable || isCompose>::type
-            _addChild(std::shared_ptr<TreeNode> item) {
-                _children.push_back(item);
-                auto vPack = AddNodeVisitor{*this};
-                item->accept(vPack);
-            }
 
-            template<bool enable = isOnNodeAdded>
-            typename std::enable_if<!enable && !isCompose>::type
-            _addChild(std::shared_ptr<TreeNode> item) {
-                _children.push_back(item);
-            }
-            */
         protected:
             int _uniqueId;
             std::vector<std::pair<std::reference_wrapper<GraphNode>, std::shared_ptr<GraphEdge>>> _edges;

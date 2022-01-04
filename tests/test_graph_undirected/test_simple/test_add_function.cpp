@@ -60,8 +60,12 @@ TEST_CASE("test_graph_undirected/test_simple | onNodeAdded function is used", "[
     REQUIRE(n4->family == 3);
     REQUIRE(e34->family == 3);
 
-    n2->connect(n4, "n2-n4");
+    auto e24 = n2->connect(n4, "n2-n4");
     REQUIRE(n3->family == 1);
     REQUIRE(n4->family == 1);
     REQUIRE(e34->family == 1);
+    REQUIRE(e24->family == 1);
+
+    auto e13 = n1->connect(n3, "n1-n3");
+    REQUIRE(e13->family == 1);
 }
