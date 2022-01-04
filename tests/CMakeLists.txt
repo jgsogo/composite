@@ -9,13 +9,6 @@ enable_testing()
 add_executable(unit_tests
         main.cpp
 
-        test_single/test_trait_simple.cpp
-        test_single/test_visitor.cpp
-        test_single/test_trait_addpart.cpp
-
-        test_composite/test_composite.cpp
-        test_composite/test_composite3.cpp
-
         # Trees
         test_tree/test_simple/test_node_simple.cpp
         test_tree/test_simple/test_visitor.cpp
