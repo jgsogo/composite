@@ -7,6 +7,10 @@
 
 namespace composite {
 
+    /*
+     * A 'Tree' is a data structure where its elements can have zero or more children, and every
+     * element except the 'root' have one parent.
+     * */
     template<typename Node, typename CompositeType = void>
     struct Tree {
         using NodeTypename = Node;

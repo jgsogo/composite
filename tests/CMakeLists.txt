@@ -15,6 +15,13 @@ add_executable(unit_tests
         test_tree/test_simple/test_add_function.cpp
         test_tree/test_composite/test_composite.cpp
         test_tree/test_composite/test_composite3.cpp
+
+        # Graph undirected
+        test_graph_undirected/test_simple/test_node_create.cpp
+        test_graph_undirected/test_simple/test_visitor.cpp
+        test_graph_undirected/test_simple/test_add_function.cpp
+        test_graph_undirected/test_composite/test_composite.cpp
+        test_graph_undirected/test_composite/test_composite3.cpp
         )
 target_link_libraries(unit_tests
         Catch2::Catch2
