@@ -4,7 +4,7 @@
 #include <stack>
 #include <queue>
 
-namespace composite::_impl {
+namespace composite::_impl::tree {
 
     template<typename TreeNodeT>
     class VisitorTree {

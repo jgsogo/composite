@@ -1,7 +1,7 @@
 #pragma once
 
 #include "tree/is_add_function.hpp"
-#include "tree/_visitor_tree.hpp"
+#include "tree/visitor_tree.hpp"
 #include "tree/_visitor_wrapper_cast.hpp"
 #include "tree/visitor.hpp"
 
@@ -21,16 +21,16 @@ namespace composite {
 
         class TreeNode;
 
-        using DFSVisitor = _impl::Visitor<TreeNode, _impl::DFSPreOrderVisitorTree>;
-        using BFSVisitor = _impl::Visitor<TreeNode, _impl::BFSVisitorTree>;
+        using DFSVisitor = _impl::Visitor<TreeNode, _impl::tree::DFSPreOrderVisitorTree>;
+        using BFSVisitor = _impl::Visitor<TreeNode, _impl::tree::BFSVisitorTree>;
 
         class TreeNode : public NodeTypename {
         public:
             using NodeTypename = Tree::NodeTypename;
         public:
-            friend class _impl::BFSVisitorTree<TreeNode>;
+            friend class _impl::tree::BFSVisitorTree<TreeNode>;
 
-            friend class _impl::DFSPreOrderVisitorTree<TreeNode>;
+            friend class _impl::tree::DFSPreOrderVisitorTree<TreeNode>;
 
             template<typename ...Args>
             explicit TreeNode(Args... args) : NodeTypename(args...) {
@@ -43,7 +43,7 @@ namespace composite {
             }
 
         protected:
-            void accept(_impl::VisitorTree<TreeNode> &v) {
+            void accept(_impl::tree::VisitorTree<TreeNode> &v) {
                 v.visit(*this);
             }
 
@@ -67,7 +67,7 @@ namespace composite {
         };
 
 
-        class AddNodeVisitor : public _impl::DFSPreOrderVisitorTree<TreeNode> {
+        class AddNodeVisitor : public _impl::tree::DFSPreOrderVisitorTree<TreeNode> {
         public:
             explicit AddNodeVisitor(TreeNode &gr) {
                 _chain.template emplace_back(gr);
