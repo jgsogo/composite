@@ -1,5 +1,8 @@
 #pragma once
 
+#include <memory>
+#include <vector>
+
 #include "tree/is_add_function.hpp"
 #include "tree/visitor_tree.hpp"
 #include "tree/visitor_wrapper_cast.hpp"
