@@ -24,9 +24,9 @@ namespace composite::_impl {
     };
 
     template<typename TreeNodeT>
-    class DFSVisitorTree : public VisitorTree<TreeNodeT> {
+    class DFSPreOrderVisitorTree : public VisitorTree<TreeNodeT> {
     public:
-        DFSVisitorTree() = default;
+        DFSPreOrderVisitorTree() = default;
 
         void start(TreeNodeT &initNode) override {
             /* RECURSIVE implementation, so 'exitNode' is called AFTER all its childrent have been processed */

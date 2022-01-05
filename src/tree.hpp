@@ -21,7 +21,7 @@ namespace composite {
 
         class TreeNode;
 
-        using DFSVisitor = _impl::Visitor<TreeNode, _impl::DFSVisitorTree>;
+        using DFSVisitor = _impl::Visitor<TreeNode, _impl::DFSPreOrderVisitorTree>;
         using BFSVisitor = _impl::Visitor<TreeNode, _impl::BFSVisitorTree>;
 
         class TreeNode : public NodeTypename {
@@ -30,7 +30,7 @@ namespace composite {
         public:
             friend class _impl::BFSVisitorTree<TreeNode>;
 
-            friend class _impl::DFSVisitorTree<TreeNode>;
+            friend class _impl::DFSPreOrderVisitorTree<TreeNode>;
 
             template<typename ...Args>
             explicit TreeNode(Args... args) : NodeTypename(args...) {
@@ -67,7 +67,7 @@ namespace composite {
         };
 
 
-        class AddNodeVisitor : public _impl::DFSVisitorTree<TreeNode> {
+        class AddNodeVisitor : public _impl::DFSPreOrderVisitorTree<TreeNode> {
         public:
             explicit AddNodeVisitor(TreeNode &gr) {
                 _chain.template emplace_back(gr);
