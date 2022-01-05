@@ -3,6 +3,9 @@
 name: "Published Release"
 
 on:
+  push:
+    branches:
+      - master
   release:
     types: [published]
 
@@ -14,6 +17,22 @@ jobs:
         run: |
           echo "github.ref_name: ${{ github.ref_name }}"
           echo "github.sha: ${{ github.sha }}"
+
+      - name: Checkout recipes repository
+        uses: actions/checkout@v2
+        with:
+          repository: 'jgsogo/conan-recipes'
+          ref: 'master'
+
+      - name: Add version to repo files
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          commit-message: "[${{ github.repository }}] Add version ${{ github.ref_name }}"
+          branch: "${{ github.repository }}-${{ github.ref_name }}"
+          title: "[${{ github.repository }}] Add version ${{ github.ref_name }}"
+          reviewers: "jgsogo"
 
       - name: "Open PR to jgsogo/conan-recipes"  # TODO: Not implemented
         run: |
