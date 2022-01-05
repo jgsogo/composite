@@ -1,0 +1,28 @@
+---
+on:
+  workflow_call:
+    inputs:
+      github_sha:
+        type: string
+        required: false
+        default: master
+
+jobs:
+  get_tag:
+    runs-on: ubuntu-latest
+    needs: ci
+    steps:
+      - name: Checkout master
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ inputs.github_sha }}
+      - name: Get version from CMakeLists.txt
+        id: tag_name
+        run: |
+          LIBRARY_VERSION=$(sed -ne 's/^.*[^0-9]VERSION \([0-9]*\.[0-9]*\.[0-9]*\).*$/\1/p' CMakeLists.txt)
+          echo ::set-output name=LIBRARY_VERSION::${LIBRARY_VERSION}
+      - name: Check the tag
+        env:
+          SOURCE_TAG: ${{ steps.tag_name.outputs.LIBRARY_VERSION }}
+        run: |
+          echo LIBRARY_VERSION

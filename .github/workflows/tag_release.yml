@@ -1,31 +1,31 @@
 name: Publish Release
 
-on:
-  push:
-    tags:
-      - 'v*'
+on: workflow_dispatch
 
 jobs:
-  test_tag:
+  ci:
+    uses: jgsogo/composite/.github/workflows/_build.yml@master
+    with:
+      library_name: composite
+      github_sha: master
+
+  get_tag:
     runs-on: ubuntu-latest
+    needs: ci
     steps:
       - uses: actions/checkout@v2
-      - name: Tag name
+        with:
+          ref: 'master'
+      - name: Get version from CMakeLists.txt
         id: tag_name
         run: |
+          LIBRARY_VERSION=$(sed -ne '/VERSION/ s/.*\= *//p' CMakeLists.txt)
           echo ::set-output name=SOURCE_TAG::${GITHUB_REF#refs/tags/}
       - name: Check the tag
         env:
           SOURCE_TAG: ${{ steps.branch_name.outputs.SOURCE_TAG }}
         run: |
           echo $SOURCE_TAG
-
-  ci:
-    needs: test_tag
-    uses: jgsogo/composite/.github/workflows/_build.yml@master
-    with:
-      library_name: composite
-      github_sha: ${{ github.sha }}
 
   create_release:
     needs: ci

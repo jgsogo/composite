@@ -9,6 +9,11 @@ on:
       - master
 
 jobs:
+  ci-version:
+    uses: jgsogo/composite/.github/workflows/_parse_version.yml@master
+    with:
+      github_sha: ${{ github.sha }}
+
   ci:
     uses: jgsogo/composite/.github/workflows/_build.yml@master
     with:
