@@ -75,6 +75,7 @@ namespace composite::_impl::graph {
         BFSVisitorGraph() = default;
 
         void start(GraphNodeT &initNode) override {
+            /* RECURSIVE implementation, so 'exitNode' is called AFTER all its children have been processed */
             std::set<int> visitedNodes;
             std::set<int> visitedEdges;
             std::queue<std::pair<std::reference_wrapper<GraphEdgeT>, std::reference_wrapper<GraphNodeT>>> queue;
