@@ -13,6 +13,11 @@ on:
       github_sha:
         type: string
         required: true
+    secrets:
+      remote_username:
+        required: true
+      remote_token:
+        required: true
 
 jobs:
   build_and_test:
@@ -46,7 +51,7 @@ jobs:
       - name: Connect to remote
         run: |
           conan remote add sogo https://sogo.jfrog.io/artifactory/api/conan/conan-center
-          conan user -r sogo -p ${{ secrets.RT_TOKEN }} ${{ secrets.RT_USERNAME }}
+          conan user -r sogo -p ${{ secrets.remote_username }} ${{ secrets.remote_token }}
 
       - name: Prepare deps
         working-directory: /home/conan/${{ inputs.library_name }}

@@ -14,3 +14,6 @@ jobs:
     with:
       library_name: composite
       github_sha: ${{ github.sha }}
+    secrets:
+      remote_username: ${{ secrets.RT_USERNAME }}
+      remote_token: ${{ secrets.RT_TOKEN }}
