@@ -6,27 +6,26 @@
 namespace {
 
     struct NodeId {
-        NodeId(std::string_view id) : id(id) {}
+        explicit NodeId(std::string_view id) : id(id) {}
 
         const std::string id;
     };
 
     struct EdgeId {
-        EdgeId(std::string_view id) : id(id) {}
+        explicit EdgeId(std::string_view id) : id(id) {}
 
         const std::string id;
     };
 
-
     struct NodeIdNum {
-        NodeIdNum(int idNum) : idNum(idNum) {}
+        explicit NodeIdNum(int idNum) : idNum(idNum) {}
 
         int idNum = 0;
         int family = -1;
     };
 
     struct EdgeIdNum {
-        EdgeIdNum(int idNum) : idNum(idNum) {}
+        explicit EdgeIdNum(int idNum) : idNum(idNum) {}
 
         int idNum = 0;
         int family = -1;
@@ -79,21 +78,23 @@ TEST_CASE("test_graph_undirected/test_composite | onNodeAdded function", "[test_
     REQUIRE(e12->family == -1);  // The family of edges is not updated, there is no 'onEdgeAdded' function
 }
 
-/*
+
 TEST_CASE("test_graph_undirected/test_composite | Visitor composite", "[test_composite]") {
-    auto root = std::make_shared<CompositeTree::TreeNode>("root", 0);
-    auto node1 = std::make_shared<CompositeTree::TreeNode>("node1", 1);
-    root->addChild(node1);
+    auto n1 = std::make_shared<CompositeGraph::GraphNode>("n1", 1);
+    auto n2 = std::make_shared<CompositeGraph::GraphNode>("n2", 2);
+    auto n3 = std::make_shared<CompositeGraph::GraphNode>("n3", 3);
+    auto n4 = std::make_shared<CompositeGraph::GraphNode>("n4", 4);
 
-    auto node2 = std::make_shared<CompositeTree::TreeNode>("node2", 2);
-    auto node3 = std::make_shared<CompositeTree::TreeNode>("node3", 3);
-    node2->addChild(node3);
-    root->addChild(node2);
+    n1->connect(n2, "n1-n2", 12);
+    n1->connect(n3, "n1-n3", 13);
+
+    n2->connect(n4, "n2-n4", 24);
+    n3->connect(n4, "n3-n4", 34);
 
 
-    class Visitor : public CompositeTree::DFSVisitor {
+    class Visitor : public CompositeGraph::DFSPreOrderVisitor {
     public:
-        void visit(CompositeTree::NodeTypename &p) override {
+        void visit(CompositeGraph::NodeTypename &p) override {
             ids.push_back(p.id);
         }
 
@@ -101,26 +102,28 @@ TEST_CASE("test_graph_undirected/test_composite | Visitor composite", "[test_com
         std::vector<std::string> ids;
     };
     Visitor visitor;
-    root->accept(visitor);
+    visitor.start(*n1);
 
-    REQUIRE(visitor.ids == std::vector<std::string>{"node1", "node3", "node2", "root"});
+    REQUIRE(visitor.ids == std::vector<std::string>{"n1", "n3", "n4", "n2"});
 }
 
 
 TEST_CASE("test_graph_undirected/test_composite | Visitor first trait", "[test_composite]") {
-    auto root = std::make_shared<CompositeTree::TreeNode>("root", 0);
-    auto node1 = std::make_shared<CompositeTree::TreeNode>("node1", 1);
-    root->addChild(node1);
+    auto n1 = std::make_shared<CompositeGraph::GraphNode>("n1", 1);
+    auto n2 = std::make_shared<CompositeGraph::GraphNode>("n2", 2);
+    auto n3 = std::make_shared<CompositeGraph::GraphNode>("n3", 3);
+    auto n4 = std::make_shared<CompositeGraph::GraphNode>("n4", 4);
 
-    auto node2 = std::make_shared<CompositeTree::TreeNode>("node2", 2);
-    auto node3 = std::make_shared<CompositeTree::TreeNode>("node3", 3);
-    node2->addChild(node3);
-    root->addChild(node2);
+    n1->connect(n2, "n1-n2", 12);
+    n1->connect(n3, "n1-n3", 13);
+
+    n2->connect(n4, "n2-n4", 24);
+    n3->connect(n4, "n3-n4", 34);
 
     {
-        class Visitor : public IDTree::DFSVisitor {
+        class Visitor : public IDGraph::DFSPreOrderVisitor {
         public:
-            void visit(IDTree::NodeTypename &p) override {
+            void visit(NodeId &p) override {
                 ids.push_back(p.id);
             }
 
@@ -128,15 +131,14 @@ TEST_CASE("test_graph_undirected/test_composite | Visitor first trait", "[test_c
             std::vector<std::string> ids;
         };
         Visitor visitor;
+        visitor.start(*n1);
 
-        root->accept(visitor);
-
-        REQUIRE(visitor.ids == std::vector<std::string>{"node1", "node3", "node2", "root"});
+        REQUIRE(visitor.ids == std::vector<std::string>{"n1", "n3", "n4", "n2"});
     }
     {
-        class Visitor : public IDTree::BFSVisitor {
+        class Visitor : public IDGraph::BFSVisitor {
         public:
-            void visit(IDTree::NodeTypename &p) override {
+            void visit(IDGraph::NodeTypename &p) override {
                 ids.push_back(p.id);
             }
 
@@ -144,28 +146,29 @@ TEST_CASE("test_graph_undirected/test_composite | Visitor first trait", "[test_c
             std::vector<std::string> ids;
         };
         Visitor visitor;
+        visitor.start(*n1);
 
-        root->accept(visitor);
-
-        REQUIRE(visitor.ids == std::vector<std::string>{"root", "node1", "node2", "node3"});
+        REQUIRE(visitor.ids == std::vector<std::string>{"n1", "n2", "n3", "n4"});
     }
 }
 
 TEST_CASE("test_graph_undirected/test_composite | Visitor second trait", "[test_composite]") {
-    auto root = std::make_shared<CompositeTree::TreeNode>("root", 0);
-    auto node1 = std::make_shared<CompositeTree::TreeNode>("node1", 1);
-    root->addChild(node1);
+    auto n1 = std::make_shared<CompositeGraph::GraphNode>("n1", 1);
+    auto n2 = std::make_shared<CompositeGraph::GraphNode>("n2", 2);
+    auto n3 = std::make_shared<CompositeGraph::GraphNode>("n3", 3);
+    auto n4 = std::make_shared<CompositeGraph::GraphNode>("n4", 4);
 
-    auto node2 = std::make_shared<CompositeTree::TreeNode>("node2", 2);
-    auto node3 = std::make_shared<CompositeTree::TreeNode>("node3", 3);
-    node2->addChild(node3);
-    root->addChild(node2);
+    n1->connect(n2, "n1-n2", 12);
+    n1->connect(n3, "n1-n3", 13);
+
+    n2->connect(n4, "n2-n4", 24);
+    n3->connect(n4, "n3-n4", 34);
 
 
     {
-        class Visitor : public IDNumTree::DFSVisitor {
+        class Visitor : public IDNumGraph::DFSPreOrderVisitor {
         public:
-            void visit(IDNumTree::NodeTypename &p) override {
+            void visit(IDNumGraph::NodeTypename &p) override {
                 ids.push_back(p.idNum);
             }
 
@@ -173,15 +176,14 @@ TEST_CASE("test_graph_undirected/test_composite | Visitor second trait", "[test_
             std::vector<int> ids;
         };
         Visitor visitor;
+        visitor.start(*n1);
 
-        root->accept(visitor);
-
-        REQUIRE(visitor.ids == std::vector<int>{1, 3, 2, 0});
+        REQUIRE(visitor.ids == std::vector<int>{1, 3, 4, 2});
     }
     {
-        class Visitor : public IDNumTree::BFSVisitor {
+        class Visitor : public IDNumGraph::BFSVisitor {
         public:
-            void visit(IDNumTree::NodeTypename &p) override {
+            void visit(IDNumGraph::NodeTypename &p) override {
                 ids.push_back(p.idNum);
             }
 
@@ -189,10 +191,8 @@ TEST_CASE("test_graph_undirected/test_composite | Visitor second trait", "[test_
             std::vector<int> ids;
         };
         Visitor visitor;
+        visitor.start(*n1);
 
-        root->accept(visitor);
-
-        REQUIRE(visitor.ids == std::vector<int>{0, 1, 2, 3});
+        REQUIRE(visitor.ids == std::vector<int>{1, 2, 3, 4});
     }
 }
- */

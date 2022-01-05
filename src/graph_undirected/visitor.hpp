@@ -1,11 +1,13 @@
 #pragma once
 
+#include "visitor_wrapper_cast.hpp"
+
 namespace composite::_impl::graph {
 
-    template<typename VisitorTrait>
-    class Visitor : public VisitorTrait {
-        using GraphNode = typename VisitorTrait::GraphNode;
-        using GraphEdge = typename VisitorTrait::GraphEdge;
+    template<typename GraphNodeT, typename GraphEdgeT, template<typename, typename> typename VisitorTrait>
+    class Visitor : public VisitorTrait<GraphNodeT, GraphEdgeT> {
+        using GraphNode = GraphNodeT;
+        using GraphEdge = GraphEdgeT;
     public:
         Visitor() = default;
 
@@ -20,6 +22,13 @@ namespace composite::_impl::graph {
         virtual bool enterEdge(typename GraphEdge::EdgeTypename &) { return true; }
 
         virtual void exitEdge(typename GraphEdge::EdgeTypename &) {}
+
+        template<typename TNode>
+        typename std::enable_if_t<std::is_base_of_v<typename GraphNode::NodeTypename, TNode>>
+        start(TNode &initNode) {
+            VisitorWrapperCast<GraphNode, GraphEdge, TNode, typename TNode::GraphEdge, VisitorTrait> wrapper{*this};
+            wrapper.start(initNode);
+        }
 
     protected:
         void visit(GraphNode &p) final { this->visit(static_cast<typename GraphNode::NodeTypename &>(p)); }

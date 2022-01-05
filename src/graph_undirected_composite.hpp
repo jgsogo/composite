@@ -39,7 +39,7 @@ namespace composite {
         static constexpr bool useComposite = Graph1Type::isOnNodeAdded or Graph1Type::isOnEdgeAdded or GraphUndirectedCompose<MoreGraphs...>::useComposite;
 
         using NodeTypename = NodeTypenameT<Graph1NodeTypenameCtorParams, Graph2NodeTypenameCtorParams>;
-        using EdgeTypename = NodeTypenameT<Graph1EdgeTypenameCtorParams, Graph2EdgeTypenameCtorParams>;
+        using EdgeTypename = EdgeTypenameT<Graph1EdgeTypenameCtorParams, Graph2EdgeTypenameCtorParams>;
         using Graph = ::composite::GraphUndirected<NodeTypename, EdgeTypename,
                 typename std::conditional<useComposite, GraphUndirectedCompose<Graph1Type, MoreGraphs...>, void>::type>;
     };

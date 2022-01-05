@@ -5,6 +5,7 @@
 #include "graph_undirected/visitor_graph.hpp"
 #include "graph_undirected/visitor.hpp"
 #include "graph_undirected/is_add_function.hpp"
+#include "graph_undirected/visitor_wrapper_cast.hpp"
 
 
 namespace composite {
@@ -27,14 +28,17 @@ namespace composite {
 
         class GraphEdge;
 
-        using DFSPreOrderVisitor = _impl::graph::Visitor<_impl::graph::DFSPreOrderVisitorGraph<GraphNode, GraphEdge>>;
-        using BFSVisitor = _impl::graph::Visitor<_impl::graph::BFSVisitorGraph<GraphNode, GraphEdge>>;
+        using DFSPreOrderVisitor = _impl::graph::Visitor<GraphNode, GraphEdge, _impl::graph::DFSPreOrderVisitorGraph>;
+        using BFSVisitor = _impl::graph::Visitor<GraphNode, GraphEdge, _impl::graph::BFSVisitorGraph>;
 
         class AddNodeVisitor;
 
         class GraphNode : public NodeTypename {
         public:
             using NodeTypename = GraphUndirected::NodeTypename;
+            using EdgeTypename = GraphUndirected::EdgeTypename;
+
+            using GraphEdge = GraphUndirected::GraphEdge;
         public:
             friend class _impl::graph::BFSVisitorGraph<GraphNode, GraphEdge>;
 
@@ -71,20 +75,20 @@ namespace composite {
             /*
             template<typename TNode, typename TEdge, bool enable = isCompose>
             typename std::enable_if<enable>::type
-            accept(_impl::Visitor <_impl::DFSVisitorGraph<TNode, TEdge>> &v) {
-                _impl::VisitorWrapperCast <TNode, TEdge, GraphNode, GraphEdge, _impl::DFSVisitorGraph> wrapper{v};
-                wrapper._onNode(*this);
+            accept(_impl::graph::Visitor<_impl::graph::DFSPreOrderVisitorGraph<TNode, TEdge>> &v) {
+                _impl::graph::VisitorWrapperCast<TNode, TEdge, GraphNode, GraphEdge, _impl::graph::DFSPreOrderVisitorGraph> wrapper{v};
+                wrapper.start(*this);
             }
 
             template<typename TNode, typename TEdge, bool enable = isCompose>
             typename std::enable_if<enable>::type
-            accept(_impl::Visitor <_impl::DFSVisitorGraph<TNode, TEdge>> &v) {
-                _impl::VisitorWrapperCast <TNode, TEdge, GraphNode, GraphEdge, _impl::DFSVisitorGraph> wrapper{v};
-                wrapper._onNode(*this);
+            accept(_impl::graph::Visitor<_impl::graph::BFSVisitorGraph<TNode, TEdge>> &v) {
+                _impl::graph::VisitorWrapperCast<TNode, TEdge, GraphNode, GraphEdge, _impl::graph::BFSVisitorGraph> wrapper{v};
+                wrapper.start(*this);
             }
             */
-
-        protected:
+        public:
+            // TODO: Make protected
             int _uniqueId;
             std::vector<std::pair<std::reference_wrapper<GraphNode>, std::shared_ptr<GraphEdge>>> _edges;
         };
@@ -93,6 +97,9 @@ namespace composite {
         class GraphEdge : public EdgeTypename {
         public:
             using EdgeTypename = GraphUndirected::EdgeTypename;
+            using NodeTypename = GraphUndirected::NodeTypename;
+
+            using GraphNode = GraphUndirected::GraphNode;
         public:
             friend class _impl::graph::BFSVisitorGraph<GraphNode, GraphEdge>;
 
@@ -110,7 +117,8 @@ namespace composite {
                 v.visit(*this);
             }
 
-        protected:
+        public:
+            // TODO: Make protected
             int _uniqueId;
             GraphNode &_origin;
             GraphNode &_target;
