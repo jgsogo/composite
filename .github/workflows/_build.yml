@@ -1,0 +1,81 @@
+---
+on:
+  workflow_call:
+    inputs:
+      docker_image:
+        type: string
+        required: false
+        default: conanio/gcc11-ubuntu16.04:1.44.0
+      library_name:
+        type: string
+        required: true
+        description: "Name of the library. It should match name of the repository"
+      github_sha:
+        type: string
+        required: true
+    secrets:
+      RT_USERNAME:
+        required: true
+      RT_TOKEN:
+        required: true
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+    container:
+      image: ${{ inputs.docker_image }}
+    env:
+      CONAN_USER_HOME: /home/conan
+    steps:
+      - name: Check out repository code
+        # uses: actions/checkout@v2
+        working-directory: /home/conan
+        run: |
+          git clone https://github.com/jgsogo/${{ inputs.library_name }}.git
+          cd ${{ inputs.library_name }}
+          git checkout ${{ inputs.github_sha }}
+
+      - name: Cache Conan packages
+        uses: actions/cache@v2
+        with:
+          key: conan-cache-${{ inputs.library_name }}
+          path: /home/conan/.conan
+
+      - name: Configure Conan
+        run: |
+          conan config set general.revisions_enabled=1
+          conan config install https://github.com/conan-io/conanclientcert.git
+          conan --version
+          conan config home
+
+      - name: Connect to remote
+        run: |
+          conan remote add sogo https://sogo.jfrog.io/artifactory/api/conan/conan-center
+          conan user -r sogo -p ${{ secrets.RT_TOKEN }} ${{ secrets.RT_USERNAME }}
+
+      - name: Prepare deps
+        working-directory: /home/conan/${{ inputs.library_name }}
+        run: |
+          cp -r .conan/profiles /home/conan/.conan
+          conan profile list
+          mkdir cmake-build-cpp20
+
+      - name: Build dependencies
+        working-directory: /home/conan/${{ inputs.library_name }}/cmake-build-cpp20
+        run: |
+          conan lock create --profile:host=cpp20 --profile:build=default --lockfile=../lockfile.json --lockfile-out=lockfile.json --name=composite --version=0.1 ../conanfile.txt --build --update
+          conan install --lockfile=lockfile.json ../conanfile.txt --build=missing --generator=virtualenv
+          conan remove "*" --builds --force
+          conan remove "*" --src --force
+
+      - name: Build the project
+        working-directory: /home/conan/${{ inputs.library_name }}/cmake-build-cpp20
+        run: |
+          . /home/conan/${{ inputs.library_name }}/cmake-build-cpp20/activate.sh
+          cmake .. -DCMAKE_MODULE_PATH=$(pwd) -DCMAKE_TOOLCHAIN_FILE=$CONAN_CMAKE_TOOLCHAIN_FILE
+          make
+
+      - name: Run tests
+        working-directory: /home/conan/${{ inputs.library_name }}/cmake-build-cpp20
+        run: |
+          tests/unit_tests
