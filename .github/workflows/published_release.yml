@@ -26,7 +26,8 @@ jobs:
 
       - name: Add version to repo files
         run: |
-          echo "Not implemented yet"
+          echo "Not implemented yet" >> README.md
+          git diff
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
