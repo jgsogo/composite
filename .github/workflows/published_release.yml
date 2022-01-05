@@ -25,6 +25,8 @@ jobs:
           ref: 'master'
 
       - name: Add version to repo files
+        run: |
+          echo "Not implemented yet"
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
