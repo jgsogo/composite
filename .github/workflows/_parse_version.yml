@@ -22,6 +22,6 @@ jobs:
           echo ::set-output name=LIBRARY_VERSION::${LIBRARY_VERSION}
       - name: Check the tag
         env:
-          SOURCE_TAG: ${{ steps.tag_name.outputs.LIBRARY_VERSION }}
+          LIBRARY_VERSION: ${{ steps.tag_name.outputs.LIBRARY_VERSION }}
         run: |
           echo LIBRARY_VERSION
