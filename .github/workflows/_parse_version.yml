@@ -6,10 +6,16 @@ on:
         type: string
         required: false
         default: master
+    outputs:
+      LIBRARY_VERSION:
+        description: "Version of the library"
+        value: ${{ jobs.get_library_version.outputs.LIBRARY_VERSION }}
 
 jobs:
   get_library_version:
     runs-on: ubuntu-latest
+    outputs:
+      LIBRARY_VERSION: ${{ steps.tag_name.outputs.LIBRARY_VERSION }}
     steps:
       - name: Checkout master
         uses: actions/checkout@v2
@@ -24,4 +30,4 @@ jobs:
         env:
           LIBRARY_VERSION: ${{ steps.tag_name.outputs.LIBRARY_VERSION }}
         run: |
-          echo LIBRARY_VERSION
+          echo $LIBRARY_VERSION
