@@ -1,0 +1,13 @@
+name: Published Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  print:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "github.ref_name: ${{ github.ref_name }}"
+          echo "github.sha: ${{ github.sha }}"

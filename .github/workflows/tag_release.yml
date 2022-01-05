@@ -1,13 +1,13 @@
-name: Publish Release
+name: Create new release
 
 on: workflow_dispatch
 
 jobs:
-  #ci:
-  #  uses: jgsogo/composite/.github/workflows/_build.yml@master
-  #  with:
-  #    library_name: composite
-  #    github_sha: master
+  ci:
+    uses: jgsogo/composite/.github/workflows/_build.yml@master
+    with:
+      library_name: composite
+      github_sha: master
 
   ci-version:
     uses: jgsogo/composite/.github/workflows/_parse_version.yml@master
@@ -16,7 +16,7 @@ jobs:
 
   create_release:
     needs:
-      # - ci
+      - ci
       - ci-version
     runs-on: ubuntu-latest
     steps:
