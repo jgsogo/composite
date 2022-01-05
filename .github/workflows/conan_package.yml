@@ -1,0 +1,30 @@
+name: Conan Package
+on: [push]
+jobs:
+  test_conan_package:
+    runs-on: ubuntu-latest
+    container:
+      image: conanio/gcc11-ubuntu16.04:1.44.0
+    env:
+      CONAN_USER_HOME: /home/conan
+    steps:
+      - name: Check out repository code
+        # uses: actions/checkout@v2
+        working-directory: /home/conan
+        run: |
+          git clone https://github.com/${{ github.repository }}.git
+          cd ${{ github.event.repository.name }}
+          git checkout ${{ github.ref_name }}
+
+      - name: Check out recipes repository
+        # uses: actions/checkout@v2
+        working-directory: /home/conan
+        run: |
+          git clone https://github.com/jgsogo/conan-recipes.git
+
+      - name: Add version to conandata.yml
+        working-directory: /home/conan
+        run: |
+            echo "  \"${{ github.sha }}:\"" >> conan-recipes/recipes/${{ github.event.repository.name }}/all/conandata.yml
+            echo "    url: https://github.com/${{ github.repository }}/archive/${{ github.sha }}.zip" >> conan-recipes/recipes/${{ github.event.repository.name }}/all/conandata.yml
+            cat conan-recipes/recipes/${{ github.event.repository.name }}/all/conandata.yml
