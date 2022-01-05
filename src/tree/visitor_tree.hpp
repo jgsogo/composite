@@ -41,7 +41,7 @@ namespace composite::_impl::tree {
                 this->visit(item);
                 for (auto &it: item._children) {
                     auto[_, inserted] = visitedNodes.insert(it->_uniqueId);
-                    if (inserted && this->enterNode(item)) {  // TODO: Rename enterNode to discoverNode
+                    if (inserted && this->enterNode(*it)) {  // TODO: Rename enterNode to discoverNode
                         onNode(*it);
                         //stack.push(std::ref(*it));
                     }

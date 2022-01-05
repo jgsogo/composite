@@ -115,7 +115,7 @@ TEST_CASE("test_graph_undirected/test_composite | Visitor composite3", "[test_co
     Visitor visitor;
     visitor.start(*n1);
 
-    REQUIRE(visitor.ids == std::vector<std::string>{"n1-1", "n3-1", "n4-1", "n2-1"});
+    REQUIRE(visitor.ids == std::vector<std::string>{"n1-1", "n2-1", "n4-1", "n3-1"});
 }
 
 
@@ -144,5 +144,5 @@ TEST_CASE("test_graph_undirected | Visitor first trait", "[test_composite]") {
     Visitor visitor;
     visitor.start(*n1);
 
-    REQUIRE(visitor.ids == std::vector<std::string>{"n1-2", "n3-2", "n4-2", "n2-2"});
+    REQUIRE(visitor.ids == std::vector<std::string>{"n1-2", "n2-2", "n4-2", "n3-2"});
 }
