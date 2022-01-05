@@ -51,11 +51,11 @@ TEST_CASE("test_graph_undirected/test_visitor | Visitor DFS pre-order", "[visito
     // Because it is indirected, all nodes are visited regardless of the starting one
     Visitor visitor;
     visitor.start(*n1);
-    REQUIRE(visitor.ids == std::vector<std::string>{"n1", "n1-n3", "n3", "n3-n4", "n4", "n2-n4", "n2", "n1-n2"});
+    REQUIRE(visitor.ids == std::vector<std::string>{"n1", "n1-n2", "n2", "n2-n4", "n4", "n3-n4", "n3", "n1-n3"});
 
     visitor.ids.clear();
     visitor.start(*n2);
-    REQUIRE(visitor.ids == std::vector<std::string>{"n2", "n2-n4", "n4", "n3-n4", "n3", "n1-n3", "n1", "n1-n2"});
+    REQUIRE(visitor.ids == std::vector<std::string>{"n2", "n1-n2", "n1", "n1-n3", "n3", "n3-n4", "n4", "n2-n4"});
 }
 
 

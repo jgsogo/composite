@@ -29,34 +29,24 @@ namespace composite::_impl::tree {
         DFSPreOrderVisitorTree() = default;
 
         void start(TreeNodeT &initNode) override {
-            /* RECURSIVE implementation, so 'exitNode' is called AFTER all its childrent have been processed */
+            /* RECURSIVE implementation, so 'exitNode' is called AFTER all its children have been processed */
             std::set<int> visitedNodes;
-            //std::stack<std::reference_wrapper<TreeNodeT>> stack;
 
             visitedNodes.insert(initNode._uniqueId);
             this->enterNode(initNode);
-            //stack.push(initNode);
 
             std::function<void(TreeNodeT &item)> onNode = [&](TreeNodeT &item) {
                 this->visit(item);
                 for (auto &it: item._children) {
                     auto[_, inserted] = visitedNodes.insert(it->_uniqueId);
-                    if (inserted && this->enterNode(item)) {  // TODO: Rename enterNode to discoverNode
+                    if (inserted && this->enterNode(*it)) {  // TODO: Rename enterNode to discoverNode
                         onNode(*it);
-                        //stack.push(std::ref(*it));
                     }
                 }
                 this->exitNode(item);  // TODO: Rename exitNode to finishNode
             };
 
             onNode(initNode);
-            /*
-            while (!stack.empty()) {
-                auto &node = stack.top();
-                stack.pop();
-                onNode(node);
-            }
-             */
         }
     };
 

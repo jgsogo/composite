@@ -104,7 +104,7 @@ TEST_CASE("test_graph_undirected/test_composite | Visitor composite", "[test_com
     Visitor visitor;
     visitor.start(*n1);
 
-    REQUIRE(visitor.ids == std::vector<std::string>{"n1", "n3", "n4", "n2"});
+    REQUIRE(visitor.ids == std::vector<std::string>{"n1", "n2", "n4", "n3"});
 }
 
 
@@ -133,7 +133,7 @@ TEST_CASE("test_graph_undirected/test_composite | Visitor first trait", "[test_c
         Visitor visitor;
         visitor.start(*n1);
 
-        REQUIRE(visitor.ids == std::vector<std::string>{"n1", "n3", "n4", "n2"});
+        REQUIRE(visitor.ids == std::vector<std::string>{"n1", "n2", "n4", "n3"});
     }
     {
         class Visitor : public IDGraph::BFSVisitor {
@@ -178,7 +178,7 @@ TEST_CASE("test_graph_undirected/test_composite | Visitor second trait", "[test_
         Visitor visitor;
         visitor.start(*n1);
 
-        REQUIRE(visitor.ids == std::vector<int>{1, 3, 4, 2});
+        REQUIRE(visitor.ids == std::vector<int>{1, 2, 4, 3});
     }
     {
         class Visitor : public IDNumGraph::BFSVisitor {

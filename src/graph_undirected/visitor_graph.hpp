@@ -45,31 +45,27 @@ namespace composite::_impl::graph {
         void start(GraphNodeT &initNode) override {
             std::set<int> visitedNodes;
             std::set<int> visitedEdges;
-            std::stack<std::pair<std::reference_wrapper<GraphEdgeT>, std::reference_wrapper<GraphNodeT>>> stack;
 
-            auto onNode = [&](GraphNodeT &item) {
-                auto[_, inserted] = visitedNodes.insert(item._uniqueId);
-                if (inserted && this->enterNode(item)) {
-                    this->visit(item);
-                    for (auto &it: item._edges) {
-                        stack.push(std::make_pair(std::ref(*it.second), it.first));
+            visitedNodes.insert(initNode._uniqueId);
+            this->enterNode(initNode);
+
+            std::function<void(GraphNodeT &)> onNode = [&](GraphNodeT &item) {
+                this->visit(item);
+                for (auto &it: item._edges) {
+                    auto[_, insertedEdge] = visitedEdges.insert(it.second->_uniqueId);
+                    if (insertedEdge && this->enterEdge(*it.second)) {
+                        this->visit(*it.second);
+                        auto[_1, insertedNode] = visitedNodes.insert(it.first.get()._uniqueId);
+                        if (insertedNode && this->enterNode(it.first)) {
+                            onNode(it.first);
+                        }
+                        this->exitEdge(*it.second);
                     }
                     this->exitNode(item);
                 }
             };
 
             onNode(initNode);
-            while (!stack.empty()) {
-                auto[edge, node] = stack.top();
-                stack.pop();
-                auto[_, inserted] = visitedEdges.insert(edge.get()._uniqueId);
-                if (inserted && this->enterEdge(edge)) {
-                    this->visit(edge);
-                    onNode(node);
-                    this->exitEdge(edge);
-                }
-            }
-
         }
     };
 
@@ -79,6 +75,7 @@ namespace composite::_impl::graph {
         BFSVisitorGraph() = default;
 
         void start(GraphNodeT &initNode) override {
+            /* RECURSIVE implementation, so 'exitNode' is called AFTER all its children have been processed */
             std::set<int> visitedNodes;
             std::set<int> visitedEdges;
             std::queue<std::pair<std::reference_wrapper<GraphEdgeT>, std::reference_wrapper<GraphNodeT>>> queue;
