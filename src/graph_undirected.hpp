@@ -72,24 +72,8 @@ namespace composite {
                 v.visit(*this);
             }
 
-            /*
-            template<typename TNode, typename TEdge, bool enable = isCompose>
-            typename std::enable_if<enable>::type
-            accept(_impl::graph::Visitor<_impl::graph::DFSPreOrderVisitorGraph<TNode, TEdge>> &v) {
-                _impl::graph::VisitorWrapperCast<TNode, TEdge, GraphNode, GraphEdge, _impl::graph::DFSPreOrderVisitorGraph> wrapper{v};
-                wrapper.start(*this);
-            }
-
-            template<typename TNode, typename TEdge, bool enable = isCompose>
-            typename std::enable_if<enable>::type
-            accept(_impl::graph::Visitor<_impl::graph::BFSVisitorGraph<TNode, TEdge>> &v) {
-                _impl::graph::VisitorWrapperCast<TNode, TEdge, GraphNode, GraphEdge, _impl::graph::BFSVisitorGraph> wrapper{v};
-                wrapper.start(*this);
-            }
-            */
-        public:
-            // TODO: Make protected
-            int _uniqueId;
+        protected:
+            int _uniqueId = -1;
             std::vector<std::pair<std::reference_wrapper<GraphNode>, std::shared_ptr<GraphEdge>>> _edges;
         };
 
@@ -117,9 +101,8 @@ namespace composite {
                 v.visit(*this);
             }
 
-        public:
-            // TODO: Make protected
-            int _uniqueId;
+        protected:
+            int _uniqueId = -1;
             GraphNode &_origin;
             GraphNode &_target;
         };
