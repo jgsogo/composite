@@ -73,10 +73,6 @@ namespace composite {
                 _chain.template emplace_back(gr);
             }
 
-            AddNodeVisitor(std::vector<std::reference_wrapper<NodeTypename>> &v, TreeNode &gr) : _chain(v) {
-                _chain.template emplace_back(gr);
-            }
-
             template<typename...T>
             struct OnNodeAddedCaller;
 
@@ -94,9 +90,6 @@ namespace composite {
                     onNodeAdded(_chain, (NodeTypename &) node);
                 }
                 _chain.push_back(node);
-                //auto recurse = AddNodeVisitor{_chain, node};
-                //recurse.start(node);
-                //return false;
             }
 
             void exitNode(TreeNode& node) override {
