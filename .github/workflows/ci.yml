@@ -10,9 +10,7 @@ on:
 
 jobs:
   build_and_test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: jgsogo/composite/.github/workflows/_build.yml@master
-        with:
-          library_name: composite
-          github_sha: ${{ github.sha }}
+    uses: jgsogo/composite/.github/workflows/_build.yml@master
+    with:
+      library_name: composite
+      github_sha: ${{ github.sha }}
