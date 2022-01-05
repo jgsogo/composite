@@ -9,11 +9,11 @@ on:
       - master
 
 jobs:
-  build_and_test:
+  ci:
     uses: jgsogo/composite/.github/workflows/_build.yml@master
     with:
       library_name: composite
       github_sha: ${{ github.sha }}
     secrets:
-      remote_username: ${{ secrets.RT_USERNAME }}
-      remote_token: ${{ secrets.RT_TOKEN }}
+      RT_USERNAME: ${{ secrets.RT_USERNAME }}
+      RT_TOKEN: ${{ secrets.RT_TOKEN }}

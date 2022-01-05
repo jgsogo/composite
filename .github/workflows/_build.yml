@@ -13,10 +13,14 @@ on:
       github_sha:
         type: string
         required: true
+      remote_center:
+        type: string
+        required: false
+        default: https://sogo.jfrog.io/artifactory/api/conan/conan-center
     secrets:
-      remote_username:
+      RT_USERNAME:
         required: true
-      remote_token:
+      RT_TOKEN:
         required: true
 
 jobs:
@@ -26,6 +30,8 @@ jobs:
       image: ${{ inputs.docker_image }}
     env:
       CONAN_USER_HOME: /home/conan
+      RT_USERNAME: ${{ secrets.RT_USERNAME }}
+      RT_TOKEN: ${{ secrets.RT_TOKEN }}
     steps:
       - name: Check out repository code
         # uses: actions/checkout@v2
@@ -50,8 +56,8 @@ jobs:
 
       - name: Connect to remote
         run: |
-          conan remote add sogo https://sogo.jfrog.io/artifactory/api/conan/conan-center
-          conan user -r sogo -p ${{ secrets.remote_username }} ${{ secrets.remote_token }}
+          conan remote add sogo ${{ inputs.remote_center }}
+          conan user -r sogo -p ${{ secrets.RT_USERNAME }} ${{ secrets.RT_TOKEN }}
 
       - name: Prepare deps
         working-directory: /home/conan/${{ inputs.library_name }}
