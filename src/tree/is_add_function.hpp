@@ -4,7 +4,7 @@
 #include <functional>
 
 
-namespace composite::_impl {
+namespace composite::_impl::tree {
 
     // Naïve class and function,
     struct S {

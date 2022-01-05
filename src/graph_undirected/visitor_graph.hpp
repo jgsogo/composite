@@ -70,7 +70,7 @@ namespace composite::_impl::graph {
                 }
             }
 
-        };
+        }
     };
 
     template<typename GraphNodeT, typename GraphEdgeT>
