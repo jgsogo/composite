@@ -1,4 +1,5 @@
-name: Create new release
+---
+name: "Create new release"
 
 on: workflow_dispatch
 

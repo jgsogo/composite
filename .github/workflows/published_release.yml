@@ -1,4 +1,6 @@
-name: Published Release
+---
+# TODO: This job probably belongs to jgsogo/conan-recipes
+name: "Published Release"
 
 on:
   release:
@@ -8,6 +10,13 @@ jobs:
   print:
     runs-on: ubuntu-latest
     steps:
-      - run: |
+      - name: "Print information"
+        run: |
           echo "github.ref_name: ${{ github.ref_name }}"
           echo "github.sha: ${{ github.sha }}"
+
+      - name: "Open PR to jgsogo/conan-recipes"
+        run: |
+          echo "github.ref_name: ${{ github.ref_name }}"
+          echo "github.sha: ${{ github.sha }}"
+
