@@ -3,35 +3,26 @@ name: Publish Release
 on: workflow_dispatch
 
 jobs:
-  ci:
-    uses: jgsogo/composite/.github/workflows/_build.yml@master
+  #ci:
+  #  uses: jgsogo/composite/.github/workflows/_build.yml@master
+  #  with:
+  #    library_name: composite
+  #    github_sha: master
+
+  ci-version:
+    uses: jgsogo/composite/.github/workflows/_parse_version.yml@master
     with:
-      library_name: composite
       github_sha: master
 
-  get_tag:
-    runs-on: ubuntu-latest
-    needs: ci
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          ref: 'master'
-      - name: Get version from CMakeLists.txt
-        id: tag_name
-        run: |
-          LIBRARY_VERSION=$(sed -ne '/VERSION/ s/.*\= *//p' CMakeLists.txt)
-          echo ::set-output name=SOURCE_TAG::${GITHUB_REF#refs/tags/}
-      - name: Check the tag
-        env:
-          SOURCE_TAG: ${{ steps.branch_name.outputs.SOURCE_TAG }}
-        run: |
-          echo $SOURCE_TAG
-
   create_release:
-    needs: ci
+    needs:
+      # - ci
+      - ci-version
     runs-on: ubuntu-latest
     steps:
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          prerelease: false
+          draft: true
+          automatic_release_tag: "v${{ needs.ci-version.outputs.LIBRARY_VERSION }}"
+
