@@ -104,27 +104,23 @@ TEST_CASE("test_tree/test_composite | Visitor composite3", "[test_composite]") {
     REQUIRE(visitor.ids == std::vector<std::string>{"p1-1", "p2-1", "g2-1", "g1-1"});
 }
 
-/*
+
 TEST_CASE("test_composite | Visitor first trait", "[test_composite]") {
-    auto group1 = std::make_shared<CompositeTrait::TraitGroup>("group1", 11);
+    auto group1 = std::make_shared<CompositeTree::TreeNode>("g1-1", "g1-2", "g1-3");
 
-    auto part1 = std::make_shared<CompositeTrait::TraitPart>("part1", 21);
-    group1->addPart(part1);
+    auto part1 = std::make_shared<CompositeTree::TreeNode>("p1-1", "p1-2", "p1-3");
+    group1->addChild(part1);
 
-    auto group2 = std::make_shared<CompositeTrait::TraitGroup>("group2", 12);
-    auto part2 = std::make_shared<CompositeTrait::TraitPart>("part2", 22);
-    group2->addPart(part2);
-    group1->addPart(group2);
+    auto group2 = std::make_shared<CompositeTree::TreeNode>("g2-1", "g2-2", "g2-3");
+    auto part2 = std::make_shared<CompositeTree::TreeNode>("p2-1", "p2-2", "p2-3");
+    group2->addChild(part2);
+    group1->addChild(group2);
 
 
-    class Visitor : public IDTrait::DFSVisitor {
+    class Visitor : public Trait1::DFSVisitor {
     public:
-        void visit(IDTrait::PartTypename &p) override {
-            ids.push_back(p.idPart);
-        }
-
-        void visitGroup(IDTrait::GroupTypename &g) override {
-            ids.push_back(g.idGroup);
+        void visit(Trait1::NodeTypename &p) override {
+            ids.push_back(p.data1);
         }
 
     public:
@@ -132,13 +128,7 @@ TEST_CASE("test_composite | Visitor first trait", "[test_composite]") {
     };
     Visitor visitor;
 
-    // TODO: Requires some work
-    //group1->accept(visitor);
+    group1->accept(visitor);
 
-    //REQUIRE(visitor.ids == std::vector<std::string>{"part1", "part2", "group2", "group1"});
+    REQUIRE(visitor.ids == std::vector<std::string>{"p1-1", "p2-1", "g2-1", "g1-1"});
 }
-
-TEST_CASE("test_composite | Visitor second trait", "[test_composite]") {
-    // TODO: Requires some work
-}
-*/
