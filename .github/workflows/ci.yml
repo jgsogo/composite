@@ -10,10 +10,9 @@ on:
 
 jobs:
   build_and_test:
-    uses: jgsogo/composite/.github/workflows/_build.yml@master
-    with:
-      library_name: composite
-      github_sha: ${{ github.sha }}
-    secrets:
-      RT_USERNAME: ${{ secrets.RT_USERNAME }}
-      RT_TOKEN: ${{ secrets.RT_TOKEN }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: jgsogo/composite/.github/workflows/_build.yml@master
+        with:
+          library_name: composite
+          github_sha: ${{ github.sha }}

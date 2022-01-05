@@ -13,11 +13,6 @@ on:
       github_sha:
         type: string
         required: true
-    secrets:
-      RT_USERNAME:
-        required: true
-      RT_TOKEN:
-        required: true
 
 jobs:
   build_and_test:
