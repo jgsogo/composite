@@ -21,8 +21,8 @@ namespace composite {
 
         class TreeNode;
 
-        using DFSVisitor = _impl::Visitor<_impl::DFSVisitorTree<TreeNode>>;
-        using BFSVisitor = _impl::Visitor<_impl::BFSVisitorTree<TreeNode>>;
+        using DFSVisitor = _impl::Visitor<TreeNode, _impl::DFSVisitorTree>;
+        using BFSVisitor = _impl::Visitor<TreeNode, _impl::BFSVisitorTree>;
 
         class TreeNode : public NodeTypename {
         public:
@@ -43,14 +43,14 @@ namespace composite {
 
             template<typename TNode, bool enable = isCompose>
             typename std::enable_if<enable>::type
-            accept(_impl::Visitor<_impl::DFSVisitorTree<TNode>> &v) {
+            accept(_impl::Visitor<TNode, _impl::DFSVisitorTree> &v) {
                 _impl::VisitorWrapperCast<TNode, TreeNode, _impl::DFSVisitorTree> wrapper{v};
                 wrapper._onNode(*this);
             }
 
             template<typename TNode, bool enable = isCompose>
             typename std::enable_if<enable>::type
-            accept(_impl::Visitor<_impl::BFSVisitorTree<TNode>> &v) {
+            accept(_impl::Visitor<TNode, _impl::BFSVisitorTree> &v) {
                 _impl::VisitorWrapperCast<TNode, TreeNode, _impl::BFSVisitorTree> wrapper{v};
                 wrapper._onNode(*this);
             }

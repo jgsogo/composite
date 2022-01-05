@@ -8,7 +8,7 @@ namespace composite::_impl {
     template<typename TNode, typename ChildTNode, template<typename> typename ImplVisitor>
     class VisitorWrapperCast : public ImplVisitor<ChildTNode> {
     public:
-        explicit VisitorWrapperCast(Visitor<ImplVisitor<TNode>> &visitor) : visitor(visitor) {}
+        explicit VisitorWrapperCast(Visitor<TNode, ImplVisitor> &visitor) : visitor(visitor) {}
 
         void visit(typename ImplVisitor<ChildTNode>::TreeNode &p) final {
             visitor.visit(static_cast<typename TNode::NodeTypename &>(p));
@@ -23,7 +23,7 @@ namespace composite::_impl {
         }
 
     protected:
-        Visitor<ImplVisitor<TNode>> &visitor;
+        Visitor<TNode, ImplVisitor> &visitor;
     };
 
 }

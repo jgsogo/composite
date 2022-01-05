@@ -2,9 +2,9 @@
 
 namespace composite::_impl {
 
-    template<typename VisitorTrait>
-    class Visitor : public VisitorTrait {
-        using TreeNode = typename VisitorTrait::TreeNode;
+    template<typename TreeNodeT, template<typename> typename VisitorTrait>
+    class Visitor : public VisitorTrait<TreeNodeT> {
+        using TreeNode = typename VisitorTrait<TreeNodeT>::TreeNode;
     public:
         Visitor() = default;
 
