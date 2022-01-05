@@ -99,9 +99,9 @@ TEST_CASE("test_tree/test_composite | Visitor composite3", "[test_composite]") {
         std::vector<std::string> ids;
     };
     Visitor visitor;
-    group1->accept(visitor);
+    visitor.start(*group1);
 
-    REQUIRE(visitor.ids == std::vector<std::string>{"p1-1", "p2-1", "g2-1", "g1-1"});
+    REQUIRE(visitor.ids == std::vector<std::string>{"g1-1", "p1-1", "g2-1", "p2-1"});
 }
 
 
@@ -127,8 +127,7 @@ TEST_CASE("test_composite | Visitor first trait", "[test_composite]") {
         std::vector<std::string> ids;
     };
     Visitor visitor;
+    visitor.start(*group1);
 
-    group1->accept(visitor);
-
-    REQUIRE(visitor.ids == std::vector<std::string>{"p1-1", "p2-1", "g2-1", "g1-1"});
+    REQUIRE(visitor.ids == std::vector<std::string>{"g1-1", "p1-1", "g2-1", "p2-1"});
 }

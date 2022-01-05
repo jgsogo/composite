@@ -35,9 +35,9 @@ TEST_CASE("test_tree/test_visitor | Visitor DFS", "[visitor]") {
         std::vector<std::string> ids;
     };
     Visitor visitor;
-    root->accept(visitor);
+    visitor.start(*root);
 
-    REQUIRE(visitor.ids == std::vector<std::string>{"node3", "node2", "node1", "root"});
+    REQUIRE(visitor.ids == std::vector<std::string>{"root", "node1", "node2", "node3"});
 }
 
 TEST_CASE("test_tree/test_visitor | Visitor BFS", "[visitor]") {
@@ -60,7 +60,7 @@ TEST_CASE("test_tree/test_visitor | Visitor BFS", "[visitor]") {
         std::vector<std::string> ids;
     };
     Visitor visitor;
-    root->accept(visitor);
+    visitor.start(*root);
 
     REQUIRE(visitor.ids == std::vector<std::string>{"root", "node1", "node2", "node3"});
 }

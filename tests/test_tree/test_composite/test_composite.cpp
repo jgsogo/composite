@@ -78,9 +78,9 @@ TEST_CASE("test_tree/test_composite | Visitor composite", "[test_composite]") {
         std::vector<std::string> ids;
     };
     Visitor visitor;
-    root->accept(visitor);
+    visitor.start(*root);
 
-    REQUIRE(visitor.ids == std::vector<std::string>{"node1", "node3", "node2", "root"});
+    REQUIRE(visitor.ids == std::vector<std::string>{"root", "node1", "node2", "node3"});
 }
 
 
@@ -106,10 +106,9 @@ TEST_CASE("test_tree/test_composite | Visitor first trait", "[test_composite]") 
             std::vector<std::string> ids;
         };
         Visitor visitor;
+        visitor.start(*root);
 
-        root->accept(visitor);
-
-        REQUIRE(visitor.ids == std::vector<std::string>{"node1", "node3", "node2", "root"});
+        REQUIRE(visitor.ids == std::vector<std::string>{"root", "node1", "node2", "node3"});
     }
     {
         class Visitor : public IDTree::BFSVisitor {
@@ -123,8 +122,7 @@ TEST_CASE("test_tree/test_composite | Visitor first trait", "[test_composite]") 
             std::vector<std::string> ids;
         };
         Visitor visitor;
-
-        root->accept(visitor);
+        visitor.start(*root);
 
         REQUIRE(visitor.ids == std::vector<std::string>{"root", "node1", "node2", "node3"});
     }
@@ -153,10 +151,9 @@ TEST_CASE("test_tree/test_composite | Visitor second trait", "[test_composite]")
             std::vector<int> ids;
         };
         Visitor visitor;
+        visitor.start(*root);
 
-        root->accept(visitor);
-
-        REQUIRE(visitor.ids == std::vector<int>{1, 3, 2, 0});
+        REQUIRE(visitor.ids == std::vector<int>{0, 1, 2, 3});
     }
     {
         class Visitor : public IDNumTree::BFSVisitor {
@@ -170,8 +167,7 @@ TEST_CASE("test_tree/test_composite | Visitor second trait", "[test_composite]")
             std::vector<int> ids;
         };
         Visitor visitor;
-
-        root->accept(visitor);
+        visitor.start(*root);
 
         REQUIRE(visitor.ids == std::vector<int>{0, 1, 2, 3});
     }

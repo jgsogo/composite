@@ -1,9 +1,10 @@
 #pragma once
 
-#include "_visitor_tree.hpp"
-#include "visitor.hpp"
 
 namespace composite::_impl {
+
+    template<typename TreeNodeT, template<typename> typename VisitorTrait>
+    class Visitor;
 
     template<typename TNode, typename ChildTNode, template<typename> typename ImplVisitor>
     class VisitorWrapperCast : public ImplVisitor<ChildTNode> {

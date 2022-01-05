@@ -28,40 +28,31 @@ namespace composite {
         public:
             using NodeTypename = Tree::NodeTypename;
         public:
-            friend class _impl::VisitorTree<TreeNode>;
+            friend class _impl::BFSVisitorTree<TreeNode>;
+
+            friend class _impl::DFSVisitorTree<TreeNode>;
 
             template<typename ...Args>
-            explicit TreeNode(Args... args) : NodeTypename(args...) {};
+            explicit TreeNode(Args... args) : NodeTypename(args...) {
+                static int uniqueId = 0;
+                _uniqueId = ++uniqueId;
+            };
 
             void addChild(std::shared_ptr<TreeNode> item) {
                 _addChild(item);
             }
 
-            void accept(_impl::VisitorTree<TreeNode> &v) {
-                v._onNode(*this);
-            }
-
-            template<typename TNode, bool enable = isCompose>
-            typename std::enable_if<enable>::type
-            accept(_impl::Visitor<TNode, _impl::DFSVisitorTree> &v) {
-                _impl::VisitorWrapperCast<TNode, TreeNode, _impl::DFSVisitorTree> wrapper{v};
-                wrapper._onNode(*this);
-            }
-
-            template<typename TNode, bool enable = isCompose>
-            typename std::enable_if<enable>::type
-            accept(_impl::Visitor<TNode, _impl::BFSVisitorTree> &v) {
-                _impl::VisitorWrapperCast<TNode, TreeNode, _impl::BFSVisitorTree> wrapper{v};
-                wrapper._onNode(*this);
-            }
-
         protected:
+            void accept(_impl::VisitorTree<TreeNode> &v) {
+                v.visit(*this);
+            }
+
             template<bool enable = isOnNodeAdded>
             typename std::enable_if<enable || isCompose>::type
             _addChild(std::shared_ptr<TreeNode> item) {
                 _children.push_back(item);
                 auto vPack = AddNodeVisitor{*this};
-                item->accept(vPack);
+                vPack.start(*item);
             }
 
             template<bool enable = isOnNodeAdded>
@@ -71,6 +62,7 @@ namespace composite {
             }
 
         protected:
+            int _uniqueId = -1;
             std::vector<std::shared_ptr<TreeNode>> _children;
         };
 
@@ -95,16 +87,20 @@ namespace composite {
                 }
             };
 
-            bool enterNode(TreeNode &node) override {
+            void visit(TreeNode &node) override {
                 if constexpr(isCompose) {
                     OnNodeAddedCaller<typename CompositeTypename::Tree1Type, typename CompositeTypename::MoreTreesType>::call(_chain, (NodeTypename &) node);
                 } else {
                     onNodeAdded(_chain, (NodeTypename &) node);
                 }
+                _chain.push_back(node);
+                //auto recurse = AddNodeVisitor{_chain, node};
+                //recurse.start(node);
+                //return false;
+            }
 
-                auto recurse = AddNodeVisitor{_chain, node};
-                recurse._visitChildren(node);
-                return false;
+            void exitNode(TreeNode& node) override {
+                _chain.pop_back();
             }
 
         protected:
