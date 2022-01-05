@@ -25,6 +25,11 @@ jobs:
       - name: Add version to conandata.yml
         working-directory: /home/conan
         run: |
-            echo "  \"${{ github.sha }}:\"" >> conan-recipes/recipes/${{ github.event.repository.name }}/all/conandata.yml
+            echo "  \"${{ github.sha }}\":" >> conan-recipes/recipes/${{ github.event.repository.name }}/all/conandata.yml
             echo "    url: https://github.com/${{ github.repository }}/archive/${{ github.sha }}.zip" >> conan-recipes/recipes/${{ github.event.repository.name }}/all/conandata.yml
             cat conan-recipes/recipes/${{ github.event.repository.name }}/all/conandata.yml
+
+      - name: Run create
+        working-directory: /home/conan
+        run: |
+          conan create conan-recipes/recipes/${{ github.event.repository.name }}/all/conanfile.py ${{ github.event.repository.name }}/${{ github.sha }}@jgsogo/testing
