@@ -1,6 +1,6 @@
 #pragma once
 
-#include "tree/_is_add_function.hpp"
+#include "tree/is_add_function.hpp"
 #include "tree/_visitor_tree.hpp"
 #include "tree/_visitor_wrapper_cast.hpp"
 #include "tree/visitor.hpp"
@@ -17,7 +17,7 @@ namespace composite {
         using CompositeTypename = CompositeType;
 
         static constexpr bool isCompose = not std::is_same_v<CompositeTypename, void>;
-        static constexpr bool isOnNodeAdded = _impl::is_onNodeAdded<NodeTypename>();
+        static constexpr bool isOnNodeAdded = _impl::tree::is_onNodeAdded<NodeTypename>();
 
         class TreeNode;
 
@@ -92,7 +92,7 @@ namespace composite {
                 _chain.push_back(node);
             }
 
-            void exitNode(TreeNode& node) override {
+            void exitNode(TreeNode &node) override {
                 _chain.pop_back();
             }
 

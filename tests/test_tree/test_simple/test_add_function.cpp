@@ -29,7 +29,7 @@ namespace {
 
 
 TEST_CASE("test_tree/test_simple | onNodeAdded function", "[trait_addpart]") {
-    REQUIRE(composite::_impl::is_onNodeAdded<NodeId>());
+    REQUIRE(composite::_impl::tree::is_onNodeAdded<NodeId>());
 }
 
 
