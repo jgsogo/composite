@@ -4,8 +4,6 @@
 #include <queue>
 #include <stack>
 
-#include "visitor_wrapper_cast.hpp"
-
 namespace composite::_impl::graph {
 
     template<typename GraphNodeT, typename GraphEdgeT>

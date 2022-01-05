@@ -3,14 +3,6 @@
 #include <vector>
 #include <functional>
 
-/*
- * inline void onNodeAdded(const NodeId &existing, NodeId &newNode) {
-
-    }
-
-    inline void onEdgeAdded(const NodeId &existing, EdgeId &newEdge) {
- * */
-
 namespace composite::_impl::graph {
 
     // Naïve class and function,
