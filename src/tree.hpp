@@ -2,7 +2,7 @@
 
 #include "tree/is_add_function.hpp"
 #include "tree/visitor_tree.hpp"
-#include "tree/_visitor_wrapper_cast.hpp"
+#include "tree/visitor_wrapper_cast.hpp"
 #include "tree/visitor.hpp"
 
 namespace composite {
@@ -21,8 +21,8 @@ namespace composite {
 
         class TreeNode;
 
-        using DFSVisitor = _impl::Visitor<TreeNode, _impl::tree::DFSPreOrderVisitorTree>;
-        using BFSVisitor = _impl::Visitor<TreeNode, _impl::tree::BFSVisitorTree>;
+        using DFSVisitor = _impl::tree::Visitor<TreeNode, _impl::tree::DFSPreOrderVisitorTree>;
+        using BFSVisitor = _impl::tree::Visitor<TreeNode, _impl::tree::BFSVisitorTree>;
 
         class TreeNode : public NodeTypename {
         public:

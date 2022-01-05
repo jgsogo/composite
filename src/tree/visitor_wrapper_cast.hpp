@@ -1,7 +1,7 @@
 #pragma once
 
 
-namespace composite::_impl {
+namespace composite::_impl::tree {
 
     template<typename TreeNodeT, template<typename> typename VisitorTrait>
     class Visitor;

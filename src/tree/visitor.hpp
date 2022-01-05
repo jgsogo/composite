@@ -1,8 +1,8 @@
 #pragma once
 
-#include "_visitor_wrapper_cast.hpp"
+#include "visitor_wrapper_cast.hpp"
 
-namespace composite::_impl {
+namespace composite::_impl::tree {
 
     template<typename TreeNodeT, template<typename> typename VisitorTrait>
     class Visitor : public VisitorTrait<TreeNodeT> {
