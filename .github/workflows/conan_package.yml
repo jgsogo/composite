@@ -14,5 +14,5 @@ jobs:
     uses: jgsogo/conan-recipes/.github/workflows/_test_recipe.yml@master
     with:
       github_sha: ${{ github.sha }}
-      github_ref_name: ${{ github.event.repository.name }}
+      library_name: ${{ github.event.repository.name }}
       repository: ${{ github.repository }}
