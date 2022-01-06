@@ -52,6 +52,6 @@ jobs:
 
       - name: Run create
         run: |
-          for profile in ${{ github.event.repository.name }}/.conan/profiles/* ; do
+          for profile in library/.conan/profiles/* ; do
             conan create conan-recipes/recipes/${{ github.event.repository.name }}/all/conanfile.py ${{ github.event.repository.name }}/${{ github.sha }}@jgsogo/testing --profile:host=$profile --profile:build=default
           done

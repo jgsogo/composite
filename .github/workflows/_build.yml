@@ -81,7 +81,7 @@ jobs:
       - name: Build the project
         run: |
           cd build
-          . activate.sh
+          . ./activate.sh
           cmake .. -DCMAKE_MODULE_PATH=$(pwd) -DCMAKE_TOOLCHAIN_FILE=$CONAN_CMAKE_TOOLCHAIN_FILE
           make
 
