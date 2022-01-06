@@ -25,7 +25,10 @@ jobs:
           git fetch --tags
           git tag | tail -1
           LATEST_TAG=$(git tag | tail -1)
-          echo ${LATEST_TAG}
+          if [ "${LATEST_TAG}" = "v${{ needs.ci-version.outputs.LIBRARY_VERSION }}" ] ; then
+            echo "Release ${LATEST_TAG} already exists!"
+            exit 1
+          fi
 
   create_release:
     needs:
