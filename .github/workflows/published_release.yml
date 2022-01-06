@@ -35,7 +35,7 @@ jobs:
           app_id: ${{ secrets.APP_RECIPES_APP_ID }}
           private_key: ${{ secrets.APP_RECIPES_PRIVATE_KEY }}
 
-      - name: Create Pull Request
+      - name: Create pull request
         uses: peter-evans/create-pull-request@v3
         with:
           commit-message: "[${{ github.repository }}] Add version ${{ github.ref_name }}"
