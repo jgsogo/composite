@@ -4,7 +4,7 @@
 #include <vector>
 #include "graph_undirected/visitor_graph.hpp"
 #include "graph_undirected/visitor.hpp"
-#include "graph_undirected/is_add_function.hpp"
+#include "impl/is_add_function.hpp"
 #include "graph_undirected/visitor_wrapper_cast.hpp"
 
 
