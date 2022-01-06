@@ -3,9 +3,6 @@
 name: "Published Release"
 
 on:
-  push:
-    branches:
-      - master
   release:
     types: [published]
 
