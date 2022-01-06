@@ -10,7 +10,7 @@ on:
     types: [published]
 
 jobs:
-  print:
+  pr_to_recipes:
     runs-on: ubuntu-latest
     steps:
       - name: "Print information"
@@ -29,6 +29,12 @@ jobs:
           echo "Not implemented yet" >> README.md
           git diff
 
+      - uses: tibdex/github-app-token@v1
+        id: generate-token
+        with:
+          app_id: ${{ secrets.APP_RECIPES_APP_ID }}
+          private_key: ${{ secrets.APP_RECIPES_PRIVATE_KEY }}
+
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
@@ -36,6 +42,7 @@ jobs:
           branch: "${{ github.repository }}-${{ github.ref_name }}"
           title: "[${{ github.repository }}] Add version ${{ github.ref_name }}"
           reviewers: "jgsogo"
+          token: ${{ steps.generate-token.outputs.token }}
 
       - name: "Open PR to jgsogo/conan-recipes"  # TODO: Not implemented
         run: |
