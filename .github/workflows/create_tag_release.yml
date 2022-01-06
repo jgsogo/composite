@@ -15,10 +15,22 @@ jobs:
     with:
       github_sha: master
 
+  release-available:
+    needs:
+      ci-version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          git fetch --tags
+          git tag | tail -1
+          LATEST_TAG=$(git tag | tail -1)
+          echo ${LATEST_TAG}
+
   create_release:
     needs:
       - ci
-      - ci-version
+      - release-available
     runs-on: ubuntu-latest
     steps:
       - uses: "marvinpinto/action-automatic-releases@latest"
