@@ -1,11 +1,7 @@
 ---
-# TODO: This job probably belongs to jgsogo/conan-recipes
 name: "Published Release"
 
 on:
-  push:
-    branches:
-      - master
   release:
     types: [published]
 

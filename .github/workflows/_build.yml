@@ -18,6 +18,13 @@ on:
         required: false
         default: https://sogo.jfrog.io/artifactory/api/conan/conan-center
 
+env:
+  CONAN_USER_HOME: /home/conan
+
+defaults:
+  run:
+    working-directory: /home/conan/library
+
 jobs:
   build_and_test:
     runs-on: ubuntu-latest
@@ -26,13 +33,19 @@ jobs:
     env:
       CONAN_USER_HOME: /home/conan
     steps:
-      - name: Check out repository code
-        # uses: actions/checkout@v2
+      - name: Upgrade Git version
         working-directory: /home/conan
         run: |
-          git clone https://github.com/jgsogo/${{ inputs.library_name }}.git
-          cd ${{ inputs.library_name }}
-          git checkout ${{ inputs.github_sha }}
+          sudo apt-get update
+          sudo apt-get install software-properties-common -y
+          sudo add-apt-repository ppa:git-core/ppa -y
+          sudo apt-get update
+          sudo apt-get install git -y
+
+      - name: Check out repository code
+        uses: rodrigorodriguescosta/checkout@main  # FIXME: Not using actions/checkout just because of 'https://github.com/actions/checkout/pull/388'
+        with:
+          path: /home/conan/library
 
       - name: Cache Conan packages
         uses: actions/cache@v2
@@ -52,28 +65,27 @@ jobs:
           conan remote add sogo ${{ inputs.remote_center }}
 
       - name: Prepare deps
-        working-directory: /home/conan/${{ inputs.library_name }}
         run: |
           cp -r .conan/profiles /home/conan/.conan
           conan profile list
           mkdir cmake-build-cpp20
 
       - name: Build dependencies
-        working-directory: /home/conan/${{ inputs.library_name }}/cmake-build-cpp20
         run: |
+          mkdir build && cd build
           conan lock create --profile:host=cpp20 --profile:build=default --lockfile=../lockfile.json --lockfile-out=lockfile.json --name=composite --version=0.1 ../conanfile.txt --build --update
           conan install --lockfile=lockfile.json ../conanfile.txt --build=missing --generator=virtualenv
           conan remove "*" --builds --force
           conan remove "*" --src --force
 
       - name: Build the project
-        working-directory: /home/conan/${{ inputs.library_name }}/cmake-build-cpp20
         run: |
-          . /home/conan/${{ inputs.library_name }}/cmake-build-cpp20/activate.sh
+          cd build
+          . activate.sh
           cmake .. -DCMAKE_MODULE_PATH=$(pwd) -DCMAKE_TOOLCHAIN_FILE=$CONAN_CMAKE_TOOLCHAIN_FILE
           make
 
       - name: Run tests
-        working-directory: /home/conan/${{ inputs.library_name }}/cmake-build-cpp20
         run: |
+          cd build
           tests/unit_tests
