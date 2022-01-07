@@ -9,20 +9,14 @@ on:
       - master
 
 jobs:
-  ci-version:
+  cmakelists-version:
     uses: jgsogo/composite/.github/workflows/_parse_version.yml@master
     with:
       github_sha: ${{ github.sha }}
-
-  ci-print:
-    needs: ci-version
-    runs-on: ubuntu-latest
-    steps:
-      - run: |
-          echo ${{ needs.ci-version.outputs.LIBRARY_VERSION }}
 
   ci:
     uses: jgsogo/composite/.github/workflows/_build.yml@master
     with:
       library_name: composite
+      library_version: ${{ needs.cmakelists-version.outputs.LIBRARY_VERSION }}
       github_sha: ${{ github.sha }}

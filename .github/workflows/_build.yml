@@ -10,6 +10,10 @@ on:
         type: string
         required: true
         description: "Name of the library. It should match name of the repository"
+      library_version:
+        type: string
+        required: true
+        description: "Version of the library."
       github_sha:
         type: string
         required: true
@@ -73,7 +77,7 @@ jobs:
       - name: Build dependencies
         run: |
           mkdir build && cd build
-          conan lock create --profile:host=cpp20 --profile:build=default --lockfile=../lockfile.json --lockfile-out=lockfile.json --name=composite --version=0.1 ../conanfile.txt --build --update
+          conan lock create --profile:host=cpp20 --profile:build=default --lockfile=../lockfile.json --lockfile-out=lockfile.json --name=${{ inputs.library_name }} --version=${{ inputs.library_version }} ../conanfile.txt --build --update
           conan install --lockfile=lockfile.json ../conanfile.txt --build=missing --generator=virtualenv
           conan remove "*" --builds --force
           conan remove "*" --src --force

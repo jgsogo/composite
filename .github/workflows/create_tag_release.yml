@@ -4,14 +4,14 @@ name: "(Manual) Create new release"
 on: workflow_dispatch
 
 jobs:
-  ci-version:
+  cmakelists-version:
     uses: jgsogo/composite/.github/workflows/_parse_version.yml@master
     with:
       github_sha: master
 
   release-available:
     needs:
-      ci-version
+      cmakelists-version
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -19,7 +19,7 @@ jobs:
           git fetch --tags
           git tag | tail -1
           LATEST_TAG=$(git tag | tail -1)
-          if [ "${LATEST_TAG}" = "v${{ needs.ci-version.outputs.LIBRARY_VERSION }}" ] ; then
+          if [ "${LATEST_TAG}" = "v${{ needs.cmakelists-version.outputs.LIBRARY_VERSION }}" ] ; then
             echo "Release ${LATEST_TAG} already exists!"
             exit 1
           fi
@@ -41,5 +41,5 @@ jobs:
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           draft: true
-          automatic_release_tag: "v${{ needs.ci-version.outputs.LIBRARY_VERSION }}"
+          automatic_release_tag: "v${{ needs.cmakelists-version.outputs.LIBRARY_VERSION }}"
 
