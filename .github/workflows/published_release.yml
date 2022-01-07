@@ -9,7 +9,7 @@ jobs:
   new_release:
     uses: jgsogo/conan-recipes/.github/workflows/_published_release.yml@master
     with:
-      github_sha: ${{ github.sha }}
+      github_sha: ${{ github.ref_name }}
       library_name: ${{ github.event.repository.name }}
       repository: ${{ github.repository }}
     secrets:
