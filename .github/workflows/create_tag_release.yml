@@ -4,12 +4,6 @@ name: "(Manual) Create new release"
 on: workflow_dispatch
 
 jobs:
-  ci:
-    uses: jgsogo/composite/.github/workflows/_build.yml@master
-    with:
-      library_name: composite
-      github_sha: master
-
   ci-version:
     uses: jgsogo/composite/.github/workflows/_parse_version.yml@master
     with:
@@ -29,6 +23,13 @@ jobs:
             echo "Release ${LATEST_TAG} already exists!"
             exit 1
           fi
+
+  ci:
+    uses: jgsogo/composite/.github/workflows/_build.yml@master
+    needs: release-available  # Only run tests if version is available
+    with:
+      library_name: composite
+      github_sha: master
 
   create_release:
     needs:
