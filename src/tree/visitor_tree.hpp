@@ -3,6 +3,7 @@
 #include <set>
 #include <stack>
 #include <queue>
+#include <functional>
 
 namespace composite::_impl::tree {
 

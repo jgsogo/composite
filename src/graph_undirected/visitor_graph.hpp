@@ -3,6 +3,7 @@
 #include <set>
 #include <queue>
 #include <stack>
+#include <functional>
 
 namespace composite::_impl::graph {
 
