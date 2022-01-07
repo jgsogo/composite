@@ -10,12 +10,12 @@ on:
 
 jobs:
   cmakelists-version:
-    uses: jgsogo/composite/.github/workflows/_parse_version.yml@master
+    uses: jgsogo/composite/.github/workflows/_parse_version.yml@${{ github.sha }}
     with:
       github_sha: ${{ github.sha }}
 
   ci:
-    uses: jgsogo/composite/.github/workflows/_build.yml@master
+    uses: jgsogo/composite/.github/workflows/_build.yml@${{ github.sha }}
     with:
       library_name: composite
       library_version: ${{ needs.cmakelists-version.outputs.LIBRARY_VERSION }}
