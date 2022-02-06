@@ -1,7 +1,7 @@
 #pragma once
 
 #include "graph_undirected.hpp"
-#include "impl/refl.hpp"
+#include "../impl/refl.hpp"
 
 namespace composite {
 

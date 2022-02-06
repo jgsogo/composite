@@ -2,6 +2,7 @@ add_library(tree INTERFACE)
 set_target_properties(tree PROPERTIES
         PUBLIC_HEADER "visitor.hpp;visitor_tree.hpp;visitor_wrapper_cast.hpp;tree.hpp;tree_composite.hpp"
         )
+target_include_directories(tree INTERFACE ${CMAKE_CURRENT_LIST_DIR})
 target_link_libraries(tree
         INTERFACE
         impl
