@@ -3,10 +3,10 @@
 #include <memory>
 #include <vector>
 
-#include "impl/is_add_function.hpp"
-#include "tree/visitor_tree.hpp"
-#include "tree/visitor_wrapper_cast.hpp"
-#include "tree/visitor.hpp"
+#include "../impl/is_add_function.hpp"
+#include "visitor_tree.hpp"
+#include "visitor_wrapper_cast.hpp"
+#include "visitor.hpp"
 
 namespace composite {
 

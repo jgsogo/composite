@@ -1,7 +1,7 @@
 
 #include <string>
-#include "catch2/catch.hpp"
-#include "tree/tree_composite.hpp"
+#include <catch2/catch.hpp>
+#include "tree_composite.hpp"
 
 namespace {
 
