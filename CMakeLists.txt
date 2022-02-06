@@ -7,4 +7,8 @@ project(composite
 set(CMAKE_CXX_STANDARD 20)
 
 add_subdirectory(src)
-add_subdirectory(tests)
+
+option(BUILD_TESTS "Also build the tests" ON)
+if (BUILD_TESTS)
+    add_subdirectory(tests)
+endif()
