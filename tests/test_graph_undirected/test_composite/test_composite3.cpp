@@ -1,7 +1,7 @@
 
 #include <string>
 #include "catch2/catch.hpp"
-#include "graph_undirected_composite.hpp"
+#include "graph_undirected/graph_undirected_composite.hpp"
 
 namespace {
 

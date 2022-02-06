@@ -2,9 +2,9 @@
 
 #include <memory>
 #include <vector>
+#include "impl/is_add_function.hpp"
 #include "graph_undirected/visitor_graph.hpp"
 #include "graph_undirected/visitor.hpp"
-#include "impl/is_add_function.hpp"
 #include "graph_undirected/visitor_wrapper_cast.hpp"
 
 
